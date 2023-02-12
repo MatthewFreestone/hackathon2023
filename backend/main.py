@@ -9,7 +9,7 @@ app=Flask("")
 
 @app.route("/")
 def home():
-    text(2567443336, "this is a test message.")
+    #text(2567443336, "this is a test message.")
     return "hello world"
 
 @app.route("/loaddata", methods=["GET"])
