@@ -5,8 +5,8 @@ import { SunIcon } from '@heroicons/react/24/solid'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 
-const navigation = [
-  { name: 'Planner', href: 'dashboard', current: true },
+let navigation = [
+  { name: 'Dashboard', href: 'dashboard', current: true },
   { name: 'Results', href: 'results', current: false },
 //   { name: 'Projects', href: '#', current: false },
 //   { name: 'Calendar', href: '#', current: false },
@@ -17,9 +17,10 @@ function classNames(...classes: any) {
 }
 export type HwNavBarProps = {
     showSignIn?: boolean
+    currentTab?: string
 }
 
-export default function HwNavBar({ showSignIn } : HwNavBarProps) {
+export default function HwNavBar({ showSignIn, currentTab } : HwNavBarProps) {
     const [username, setUsername] = useState('')
 
     useEffect(() => {
@@ -27,6 +28,16 @@ export default function HwNavBar({ showSignIn } : HwNavBarProps) {
         if (username) {
             setUsername(username)
         }
+        navigation = navigation.map((nav) => {
+            if (nav.name === currentTab) {
+                nav.current = true
+            }
+            else {
+                nav.current = false
+            }
+            return nav
+        })
+        
     }, [])
 
   return (

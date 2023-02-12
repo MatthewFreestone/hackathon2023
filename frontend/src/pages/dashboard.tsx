@@ -219,7 +219,7 @@ const Dashboard = () => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <main className="flex flex-col items-center w-full min-h-screen ">
-                <HwNavBar />
+                <HwNavBar currentTab="Dashboard"/>
                 <div className="absolute -z-10">
                     <Image src="/dalleImg.png" alt="hero" width={718} height={718} className="blur-3xl scale-x-[2.3] scale-150 opacity-80 " />
                     <Image src="/dalleImg.png" alt="hero" width={718} height={718} className="blur-3xl scale-x-[2.3] scale-150 opacity-80 " />
