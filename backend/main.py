@@ -42,8 +42,8 @@ def load_data():
     return {"user": user.json(), "assignments": [a.json() for a in Assignment.find_all(user.username)]}
 
 
-@app.route("/setdifficulty", methods=["POST"])
-def set_difficulty():
+@app.route("/setassignment", methods=["POST"])
+def set_assignment():
     args = request.args
     valid, username = decode(args.get("token"))
     if not valid:
@@ -52,6 +52,7 @@ def set_difficulty():
     if assignment is None:
         return {"error": "Invalid id"}
     assignment.difficulty = int(args.get("difficulty"))
+    assignment.splitable = args.get("splitable")=="true"
     assignment.save()
     return assignment.json()
 

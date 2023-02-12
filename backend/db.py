@@ -102,6 +102,7 @@ class Assignment(ABCDatabasable):
         self.course = course
         self.due_date = due_date
         self.difficulty = 1
+        self.splitable = True
 
     @classmethod
     def find(cls, ID, username):
@@ -111,4 +112,4 @@ class Assignment(ABCDatabasable):
 
     @classmethod
     def find_all(cls, username):
-        return list(map(cls, db.assignments.find({"user": username})))
+        return sorted(list(map(cls, db.assignments.find({"user": username}))), key=lambda x:x.due_date)
