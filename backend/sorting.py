@@ -12,7 +12,7 @@ def sortAssignments(assignments, datePercents):
     currentValue = [0 for _ in range(len(datePercents))]
 
     dailyAssignments = defaultdict(list)
-    total = sum([x[0] for x in assignDifficulties])
+    total = sum([x[0] for x in assignDifficulties]) * 1.33
     
     for assign in assignDifficulties:
         dif = assign[0]
@@ -30,14 +30,3 @@ def sortAssignments(assignments, datePercents):
         dailyAssignments[selectedDate].append(assign)
 
     return (currentValue, total, dailyAssignments)
-
-if __name__ == "__main__":
-    datePercents = [10, 50, 0, 25, 15]
-    assignments = []
-    for i in range(10):
-        assignments.append(Assignment(str(i), "test", random.randint(1, 8), random.randint(1,100)))
-
-    (dailyTotals, total, dailyAssignments) = sortAssignments(assignments, datePercents)
-    print(datePercents)
-    print(str([i * 100 / total for i in dailyTotals]))
-    print(dailyAssignments)
