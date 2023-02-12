@@ -1,54 +1,65 @@
 import HwNavBar from "components/HwNavBar";
 import Head from "next/head";
+import Image from "next/image";
 import DatePicker from 'tailwind-datepicker-react'
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 const Dashboard = () => { 
     const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
-    const [startDate, setStartDate] = useState<Date>(new Date())
-    const [endDate, setEndDate] = useState<Date>(new Date())
+    let currentDate = new Date()
+    currentDate.setHours(0, 0, 0, 0)
+    const [startDate, setStartDate] = useState<Date>(currentDate)
+    const [endDate, setEndDate] = useState<Date>(currentDate)
+    const [anchorDate, setAnchorDate] = useState<Date>(currentDate)
 
     const [showStartDatePicker, setShowStartDatePicker] = useState<boolean>(false)
     const [showEndDatePicker, setShowEndDatePicker] = useState<boolean>(false)
+    const [showAnchorDatePicker, setShowAnchorDatePicker] = useState<boolean>(false)
 
     const [endDateInvalid, setEndDateInvalid] = useState<boolean>(false)
 
     useEffect(() => {
-        if (endDate < startDate) {
-            console.log("end date is invalid")
+        console.log("startDate: ", startDate)
+        console.log("endDate: ", endDate)
+        console.log("anchorDate: ", anchorDate)
+        if (!startDate || !endDate || !anchorDate || endDate < startDate || anchorDate > startDate ) {
+            console.log("Selected Dates are Invalid")
             setEndDateInvalid(true)
         } else {
-            
             setEndDateInvalid(false)
         }
-    }, [endDate, startDate])
+    }, [endDate, startDate, anchorDate])
 
     const datepickerOptions = {
-        title: endDateInvalid ? "bg-red-500" : "bg-white",
+        title: "",
         autoHide: false,
         todayBtn: true,
         clearBtn: true,
         theme: {
             background: endDateInvalid ? "bg-red-500" : "bg-white",
-            // background: "bg-white",
             todayBtn: "",
             clearBtn: "",
             icons: "",
             text: "",
-            disabledText: "bg-red-500",
+            disabledText: "",
             input: "bg-white",
             inputIcon: "",
             selected: "",
         },
         datepickerClassNames: "top-12",
-        // defaultDate: new Date("2022-01-01"),
         language: "en",
     }
 
     const handleSearch = () => {
-        console.log(`searching...${BACKEND_URL}`)
-        axios.get(`${BACKEND_URL}`).then((res) => {
+        const month_year_day = anchorDate.toLocaleString('default', { month: '2-digit', day: '2-digit', year: 'numeric' }).split('/')
+        const anchor =  month_year_day[2] + '-' + month_year_day[0] + '-' + month_year_day[1]
+        const work_days = startDate.getDate() - anchorDate.getDate()
+        const vacation_days = endDate.getDate() - startDate.getDate() + 1
+        
+        const destination = `${BACKEND_URL}/setcalendar?anchor=${anchor}&work_days=${work_days}&vacation_days=${vacation_days}`
+        console.log(`Sending request to ${destination}`)
+        axios.post(destination).then((res) => {
             console.log(res.data)
         })
         .catch((err) => {
@@ -66,30 +77,48 @@ const Dashboard = () => {
             </Head>
             <main className="flex flex-col items-center w-full min-h-screen">
                 <HwNavBar />
-                <div className="mt-24">
+                <Image src="/dalleImg.png" alt="hero" width={718} height={718} className="absolute blur-3xl scale-x-[2.3] scale-150 opacity-80" />
+                <div className="relative mt-24 flex flex-col items-center">
                     <h2 className="text-3xl font-bold tracking-tight text-white-900 sm:text-4xl">
-                        I want to take a vacation on...
+                        I want to take a vacation on
                     </h2>
-                    <div className="mt-2">
-                        <DatePicker
-                            options={datepickerOptions}
-                            value={startDate}
-                            onChange={(date) => setStartDate(date)}
-                            setShow={(value) => setShowStartDatePicker(value)}
-                            show={showStartDatePicker}
-                        />
+                    <div className="flex flex-row gap-x-5 items-center mt-4">
+                        <div>
+                            <DatePicker
+                                options={datepickerOptions}
+                                value={startDate}
+                                onChange={(date) => setStartDate(date)}
+                                setShow={(value) => setShowStartDatePicker(value)}
+                                show={showStartDatePicker}
+                            />
+                        </div>
+                        <h2 className="text-lg font-bold tracking-tight text-white-900 sm:text-2xl">
+                            to
+                        </h2>
+                        <div>
+                            <DatePicker
+                                options={datepickerOptions}
+                                value={endDate}
+                                onChange={(date) => setEndDate(date)}
+                                setShow={(value) => setShowEndDatePicker(value)}
+                                show={showEndDatePicker}
+                            />
+                        </div>
                     </div>
-                    <h2 className="text-2xl font-bold tracking-tight text-white-900 sm:text-3xl mt-4">
-                        to ...
-                    </h2>
-                    <div className="mt-2">
-                        <DatePicker
-                            options={datepickerOptions}
-                            value={endDate}
-                            onChange={(date) => setEndDate(date)}
-                            setShow={(value) => setShowEndDatePicker(value)}
-                            show={showEndDatePicker}
-                        />
+                    <div className="flex flex-col items-center mt-5">
+                        <h2 className="text-lg font-bold tracking-tight text-white-900 sm:text-xl">
+                            And I want to start doing extra work on 
+                        </h2>
+                        <div className="mt-2">
+                            {/* anchor date picker */}
+                            <DatePicker
+                                options={datepickerOptions}
+                                value={anchorDate}
+                                onChange={(date) => setAnchorDate(date)}
+                                setShow={(value) => setShowAnchorDatePicker(value)}
+                                show={showAnchorDatePicker}
+                            />
+                        </div>
                     </div>
                     <button 
                         className={`rounded-md lg:px-5 lg:py-3 px-3.5 py-1.5 
@@ -98,7 +127,7 @@ const Dashboard = () => {
                             focus-visible:outline-white mt-4 ${endDateInvalid ? "cursor-not-allowed bg-red-500 border-white border " : " bg-darkBlue  hover:bg-lightBlue "}`}
                         onClick={() => {!endDateInvalid && handleSearch()}}
                     >
-                        {endDateInvalid ? "End date must be after start date": "Calculate my work distribution"}
+                        {endDateInvalid ? "Selected Dates are Invalid": "Calculate my work distribution"}
                     </button>
                 </div>
             </main>

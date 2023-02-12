@@ -1,4 +1,6 @@
 import Head from 'next/head'
+import Image from 'next/image'
+import Link from 'next/link'
 // import Image from 'next/image'
 import { Inter, Roboto } from '@next/font/google'
 // import styles from '@/styles/Home.module.css'
@@ -18,8 +20,9 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex flex-col items-center w-full min-h-screen">
+        <Image src="/dalleImg.png" alt="hero" width={718} height={718} className="absolute blur-lg scale-x-[2.3] scale-150" />
         <HwNavBar showSignIn={true}/>
-        <div className="absolute inset-x-0 top-[-10rem] transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]">
+        {/* <div className="absolute inset-x-0 top-[-10rem] transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]">
         <svg
           className="relative left-[calc(50%-11rem)] -z-10 h-[21.1875rem] max-w-none -translate-x-1/2 rotate-[30deg] sm:left-[calc(50%-30rem)] sm:h-[42.375rem]"
           viewBox="0 0 1155 678"
@@ -44,7 +47,7 @@ export default function Home() {
             </linearGradient>
           </defs>
         </svg>
-        </div>
+        </div> */}
         <div className="relative mt-20 w-full lg:px-8 px-6">
           <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
             <div className='text-center mb-8'>
@@ -56,9 +59,9 @@ export default function Home() {
               </h2>
             </div>
             <div className='flex justify-center flex-row gap-x-6'>
-              <a href="/dashboard" className="rounded-md bg-darkBlue lg:px-5 lg:py-3 px-3.5 py-1.5 text-base font-semibold leading-7 text-white shadow-sm hover:bg-lightBlue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+              <Link href="/dashboard" className="rounded-md bg-darkBlue lg:px-5 lg:py-3 px-3.5 py-1.5 text-base font-semibold leading-7 text-white shadow-sm hover:bg-lightBlue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
                 Get Started
-              </a>
+              </Link>
               <a href="https://www.google.com/search?q=why+am+i+always+so+sad" className="rounded-md bg-transparent border-darkBlue border lg:px-5 lg:py-3 px-3.5 py-1.5 text-base font-semibold leading-7 text-white shadow-sm hover:bg-lightBlue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
                 I hate hackathon projects
               </a>

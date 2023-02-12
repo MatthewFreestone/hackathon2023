@@ -37,13 +37,8 @@ export default function HwNavBar({ showSignIn } : HwNavBarProps) {
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex flex-shrink-0 items-center">
-                  <SunIcon className='h-9 w-auto text-darkSand lg:hidden'/>
-                  <SunIcon className='h-9 w-auto text-darkSand lg:block hidden'/>
-                  {/* <img
-                    className="hidden h-8 w-auto lg:block"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                    alt="Your Company"
-                  /> */}
+                  <a href="/"><SunIcon className='h-9 w-auto text-darkSand lg:hidden'/></a>
+                  <a href="/"><SunIcon className='h-9 w-auto text-darkSand lg:block hidden'/></a>
                 </div>
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex space-x-4 h-full">
