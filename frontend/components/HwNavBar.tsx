@@ -2,12 +2,14 @@ import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon, UserCircleIcon } from '@heroicons/react/24/outline'
 import { SunIcon } from '@heroicons/react/24/solid'
+import Link from 'next/link'
+import { useState, useEffect } from 'react'
 
-const navigation = [
-  { name: 'Planner', href: '#', current: true },
-  { name: 'Profile', href: '#', current: false },
+let navigation = [
+  { name: 'Dashboard', href: 'dashboard', current: true },
+  { name: 'Results', href: 'results', current: false },
 //   { name: 'Projects', href: '#', current: false },
-  { name: 'Calendar', href: '#', current: false },
+//   { name: 'Calendar', href: '#', current: false },
 ]
 
 function classNames(...classes: any) {
@@ -15,9 +17,29 @@ function classNames(...classes: any) {
 }
 export type HwNavBarProps = {
     showSignIn?: boolean
+    currentTab?: string
 }
 
-export default function HwNavBar({ showSignIn } : HwNavBarProps) {
+export default function HwNavBar({ showSignIn, currentTab } : HwNavBarProps) {
+    const [username, setUsername] = useState('')
+
+    useEffect(() => {
+        const username = localStorage.getItem('username')
+        if (username) {
+            setUsername(username)
+        }
+        navigation = navigation.map((nav) => {
+            if (nav.name === currentTab) {
+                nav.current = true
+            }
+            else {
+                nav.current = false
+            }
+            return nav
+        })
+        
+    }, [])
+
   return (
     <Disclosure as="nav" className="bg-darkBlue fixed w-full z-50">
       {({ open }) => (
@@ -37,18 +59,13 @@ export default function HwNavBar({ showSignIn } : HwNavBarProps) {
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex flex-shrink-0 items-center">
-                  <SunIcon className='h-9 w-auto text-darkSand lg:hidden'/>
-                  <SunIcon className='h-9 w-auto text-darkSand lg:block hidden'/>
-                  {/* <img
-                    className="hidden h-8 w-auto lg:block"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                    alt="Your Company"
-                  /> */}
+                  <Link href="/"><SunIcon className='h-9 w-auto text-darkSand lg:hidden'/></Link>
+                  <Link href="/"><SunIcon className='h-9 w-auto text-darkSand lg:block hidden'/></Link>
                 </div>
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex space-x-4 h-full">
                     {!showSignIn && navigation.map((item) => (
-                      <a
+                      <Link
                         key={item.name}
                         href={item.href}
                         className={classNames(
@@ -58,7 +75,7 @@ export default function HwNavBar({ showSignIn } : HwNavBarProps) {
                         aria-current={item.current ? 'page' : undefined}
                       >
                         {item.name}
-                      </a>
+                      </Link>
                     ))}
                     {showSignIn && (
                         <div className='my-auto'>
@@ -70,13 +87,7 @@ export default function HwNavBar({ showSignIn } : HwNavBarProps) {
               </div>
               {!showSignIn && (
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <button
-                  type="button"
-                  className="rounded-full bg-darkBlue p-1 text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                >
-                  <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-6 w-6" aria-hidden="true" />
-                </button>
+                <p>{username}</p>
 
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
@@ -96,7 +107,7 @@ export default function HwNavBar({ showSignIn } : HwNavBarProps) {
                     leaveTo="transform opacity-0 scale-95"
                   >
                     <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                      <Menu.Item>
+                      {/* <Menu.Item>
                         {({ active }) => (
                           <a
                             href="#"
@@ -115,15 +126,15 @@ export default function HwNavBar({ showSignIn } : HwNavBarProps) {
                             Settings
                           </a>
                         )}
-                      </Menu.Item>
+                      </Menu.Item> */}
                       <Menu.Item>
                         {({ active }) => (
-                          <a
-                            href="#"
+                          <Link
+                            href="/signin"
                             className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                           >
                             Sign out
-                          </a>
+                          </Link>
                         )}
                       </Menu.Item>
                     </Menu.Items>
@@ -132,14 +143,14 @@ export default function HwNavBar({ showSignIn } : HwNavBarProps) {
               </div>)}
               {showSignIn && (
                 <div className='flex'>
-                    <a
-                        href="#"
+                    <Link
+                        href="/signin"
                         className="rounded-full bg-darkBlue p-1 text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                     >
                         <span className='text-lg font-sans font-semibold leading-6'>
                             Sign in <span aria-hidden="true">&rarr;</span>
                         </span>
-                    </a>
+                    </Link>
                 </div>
 
                 )}
