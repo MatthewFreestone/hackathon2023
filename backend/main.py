@@ -54,10 +54,10 @@ def load_data():
 @app.route("/setdifficulty", methods=["POST"])
 def set_difficulty():
     args = request.args
-    valid, user = decode(args.get("token"))
+    valid, username = decode(args.get("token"))
     if not valid:
         return {"error": "Invalid token"}
-    assignment = Assignment.find(args.get("id"), user)
+    assignment = Assignment.find(args.get("id"), username)
     if assignment is None:
         return {"error": "Invalid id"}
     assignment.difficulty = int(args.get("difficulty"))
@@ -71,13 +71,19 @@ def set_percentage():
     return "Set day: " + str(args.get("day")) + " to percentage: " + str(args.get("percentage"))
 
 
-@app.route("/setcalendar", methods=["POST"])
+@app.route("/setcalendar", methods=["GET", "POST"])
 def set_calendar():
     args = request.args
-    return """Set anchor: {anchor} with num of work days as: {work_days} and
-            num of vacation days as: {vac_days}""".format(anchor=args.get("anchor"),
-                                                          work_days=args.get("workdays"),
-                                                          vac_days=args.get("vacdays"))
+    valid, username = decode(args.get("token"))
+    if not valid:
+        return {"error": "Invalid token"}
+    user = User.find(username)
+    if user is None:
+        return {"error": "Unknown user"}
+
+    user.set_calendar(args.get("anchor"), int(args.get("work_days")), int(args.get("vacation_days")))
+    user.save()
+    return user.json()
 
 
 @app.route("/getrecschedule", methods=["GET"])
