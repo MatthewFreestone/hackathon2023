@@ -4,6 +4,7 @@ from db import Assignment, User, set_db_test_data
 from sms import text
 from token_auth import encode, decode
 from openai_responses import get_congrats_message, get_encourage_message
+from sorting import newSortAssignments
 from dotenv import load_dotenv
 import os
 
@@ -16,7 +17,7 @@ def home():
     return "hello world"
 
 
-@app.route("/login", methods=["POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
     args = request.args
     if not User.is_valid(args.get("username"), args.get("password")):
@@ -90,11 +91,20 @@ def set_calendar():
     return user.json()
 
 
-@app.route("/getrecschedule", methods=["GET"])
+@app.route("/getschedule", methods=["GET"])
 def get_recommended_schedule():
     args = request.args
-    return "Getting schedule for {username} with the token {token}".format(username=args.get("username"),
-                                                                           token=args.get("token"))
+    valid, username = decode(args.get("token"))
+    if not valid:
+        return {"error": "Invalid token"}
+    user = User.find(username)
+    if user is None:
+        return {"error": "Unknown user"}
+
+    assignments = Assignment.find_all(username)
+    for a in assignments:
+        a.day(user.anchor)
+    return newSortAssignments(assignments, user.percents)
 
 
 @app.route("/sendmorningmessage", methods=["GET"])
