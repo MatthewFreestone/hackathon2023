@@ -3,12 +3,13 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon, UserCircleIcon } from '@heroicons/react/24/outline'
 import { SunIcon } from '@heroicons/react/24/solid'
 import Link from 'next/link'
+import { useState, useEffect } from 'react'
 
 const navigation = [
   { name: 'Planner', href: '#', current: true },
-  { name: 'Profile', href: '#', current: false },
+//   { name: 'Profile', href: '#', current: false },
 //   { name: 'Projects', href: '#', current: false },
-  { name: 'Calendar', href: '#', current: false },
+//   { name: 'Calendar', href: '#', current: false },
 ]
 
 function classNames(...classes: any) {
@@ -19,6 +20,15 @@ export type HwNavBarProps = {
 }
 
 export default function HwNavBar({ showSignIn } : HwNavBarProps) {
+    const [username, setUsername] = useState('')
+
+    useEffect(() => {
+        const username = localStorage.getItem('username')
+        if (username) {
+            setUsername(username)
+        }
+    }, [])
+
   return (
     <Disclosure as="nav" className="bg-darkBlue fixed w-full z-50">
       {({ open }) => (
@@ -66,13 +76,7 @@ export default function HwNavBar({ showSignIn } : HwNavBarProps) {
               </div>
               {!showSignIn && (
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <button
-                  type="button"
-                  className="rounded-full bg-darkBlue p-1 text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                >
-                  <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-6 w-6" aria-hidden="true" />
-                </button>
+                <p>{username}</p>
 
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
@@ -92,7 +96,7 @@ export default function HwNavBar({ showSignIn } : HwNavBarProps) {
                     leaveTo="transform opacity-0 scale-95"
                   >
                     <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                      <Menu.Item>
+                      {/* <Menu.Item>
                         {({ active }) => (
                           <a
                             href="#"
@@ -111,7 +115,7 @@ export default function HwNavBar({ showSignIn } : HwNavBarProps) {
                             Settings
                           </a>
                         )}
-                      </Menu.Item>
+                      </Menu.Item> */}
                       <Menu.Item>
                         {({ active }) => (
                           <a

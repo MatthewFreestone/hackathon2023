@@ -3,6 +3,7 @@ import Head from "next/head";
 import Image from "next/image";
 import DatePicker from 'tailwind-datepicker-react'
 import AssignmentCard from "components/AssignmentCard";
+import DayCard from "components/DayCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -14,6 +15,12 @@ type Assignment = {
     name: string,
     user: string,
     _id: string,
+}
+
+type WorkDay = {
+    date: Date,
+    percentage: number,
+    assignments?: Assignment[],
 }
 
 const Dashboard = () => { 
@@ -32,6 +39,12 @@ const Dashboard = () => {
     const [endDateInvalid, setEndDateInvalid] = useState<boolean>(false)
 
     const [assignments, setAssignments] = useState<Assignment[]>([])
+
+    const [workDays, setWorkDays] = useState<WorkDay[]>([])
+    const [percentages, setPercentages] = useState<number[]>([])
+
+    const totalWorkPercentage = percentages && percentages.reduce((a, b) => a + b, 0)
+    const validWorkPercentage = totalWorkPercentage === 100
 
     useEffect(() => {
         // console.log("startDate: ", startDate)
@@ -106,6 +119,12 @@ const Dashboard = () => {
         console.log(`Sending request to ${destination}`)
         axios.post(destination).then((res) => {
             console.log(res.data)
+            if (res.data.error) {
+                console.error("Error in updating calendar")
+                return
+            }
+            setPercentages(res.data.percents)
+            console.log(percentages)
         })
         .catch((err) => {
             console.log(err)
@@ -132,12 +151,29 @@ const Dashboard = () => {
         language: "en",
     }
 
+    const createWorkDayCards = () => {
+        let new_workdays: WorkDay[] = []
+        // find days between anchorDate and startDate
+        for (let i = 0; i < percentages.length; i++) {
+            const date = new Date(anchorDate)
+            date.setDate(date.getDate() + i)
+            new_workdays.push({
+                date: date,
+                percentage: percentages[i],
+                assignments: [],
+            })
+        }
+        setWorkDays(new_workdays)
+    }
+
     const handleSearch = () => {
         if (endDateInvalid) {
             return
         }
         updateAssignments()
         updateCalendar()
+        createWorkDayCards()
+        document.location.href = '#availability'
     }
 
     return (
@@ -148,9 +184,12 @@ const Dashboard = () => {
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <main className="flex flex-col items-center w-full min-h-screen">
+            <main className="flex flex-col items-center w-full min-h-screen ">
                 <HwNavBar />
-                <Image src="/dalleImg.png" alt="hero" width={718} height={718} className="absolute blur-3xl scale-x-[2.3] scale-150 opacity-80 -z-10" />
+                <div className="absolute -z-10">
+                    <Image src="/dalleImg.png" alt="hero" width={718} height={718} className="blur-3xl scale-x-[2.3] scale-150 opacity-80 " />
+                    <Image src="/dalleImg.png" alt="hero" width={718} height={718} className="blur-3xl scale-x-[2.3] scale-150 opacity-80 " />
+                </div>
                 <div className="mt-24 my-8 opacity-100 w-full sm:px-10 px-8">
                     <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl text-center my-2">
                         Upcoming Assignments
@@ -158,7 +197,6 @@ const Dashboard = () => {
                     {/* <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-4"> */}
                     <div className="flex justify-center flex-wrap gap-10">
                         {assignments.length !== 0 && assignments.map((assignment) => {
-                            console.log(assignment)
                             return (
                                 <div className="flex justify-center">
                                 <AssignmentCard
@@ -196,6 +234,7 @@ const Dashboard = () => {
                         <div>
                             <DatePicker
                                 options={datepickerOptions}
+                                // @ts-ignore
                                 value={startDate}
                                 onChange={(date) => setStartDate(date)}
                                 setShow={(value) => setShowStartDatePicker(value)}
@@ -208,6 +247,7 @@ const Dashboard = () => {
                         <div>
                             <DatePicker
                                 options={datepickerOptions}
+                                // @ts-ignore
                                 value={endDate}
                                 onChange={(date) => setEndDate(date)}
                                 setShow={(value) => setShowEndDatePicker(value)}
@@ -223,6 +263,7 @@ const Dashboard = () => {
                             {/* anchor date picker */}
                             <DatePicker
                                 options={datepickerOptions}
+                                // @ts-ignore
                                 value={anchorDate}
                                 onChange={(date) => setAnchorDate(date)}
                                 setShow={(value) => setShowAnchorDatePicker(value)}
@@ -234,11 +275,52 @@ const Dashboard = () => {
                         className={`rounded-md lg:px-5 lg:py-3 px-3.5 py-1.5 
                             text-base font-semibold leading-7 text-white shadow-sm
                             focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 
-                            focus-visible:outline-white mt-4 ${endDateInvalid ? "cursor-not-allowed bg-red-500 border-white border " : " bg-darkBlue  hover:bg-lightBlue "}`}
+                            focus-visible:outline-white mt-4 ${endDateInvalid ? "cursor-not-allowed bg-red-500 border-white border disabled " : " bg-darkBlue  hover:bg-lightBlue "}`}
                         onClick={() => {!endDateInvalid && handleSearch()}}
                     >
                         {endDateInvalid ? "Selected Dates are Invalid": "Calculate my work distribution"}
                     </button>
+                </div>
+                <div className="mt-24 my-8 opacity-100 w-full sm:px-10 px-8">
+                    <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl text-center my-2">
+                        Work Distribution
+                    </h1>
+                    <a id="availability" className="relative -top-32"></a>
+                    <div className="flex flex-row flex-wrap gap-2 justify-center">
+                        {workDays.length !== 0 && workDays.map((workDay) => {                        
+                            return (
+                                <DayCard
+                                    date={workDay.date}
+                                    percentage={workDay.percentage}
+                                    key={workDay.date.toString()}
+                                    onPercentageChange={(value) => {
+                                        console.log("Changing percentage of ", workDay.date, " to ", value)
+                                        workDay.percentage = value
+                                        setPercentages(() => workDays.map((workDay) => workDay.percentage))
+                                    }}
+                                />
+                            )
+                        })}
+                    </div>
+                    <div>
+                        {workDays.length === 0 && (
+                            <div className="flex flex-col items-center justify-center w-full">
+                                <h2 className="text-2xl font-bold tracking-tight text-center text-gray-400 sm:text-3xl my-2">
+                                    Loading Work Distribution ...
+                                </h2>
+                            </div>
+                        )}
+                        {workDays.length !== 0 && (
+                            <div className="flex flex-col items-center justify-center w-full mt-4">
+                                <h2 
+                                    
+                                    className= {`text-2xl font-bold tracking-tight text-center ${validWorkPercentage ? "text-white" : 'text-red'} sm:text-3xl my-2`}
+                                    >
+                                    Total Work Percentage: {totalWorkPercentage}%
+                                </h2>
+                            </div>
+                        )}
+                    </div>
                 </div>
                 
             </main>
