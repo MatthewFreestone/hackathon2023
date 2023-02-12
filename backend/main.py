@@ -59,4 +59,16 @@ def get_recommended_schedule():
                                                                            token=args.get("token"))
 
 
+@app.route("/login", methods=["GET"])
+def login():
+    args = request.args
+    username = args.get("username")
+    password = args.get("password")
+    # if User.is_valid(username, password):
+    #   return encode(username)
+    # else
+    #   return {"username: "", "status": "invalid_credentials"}
+    return "Loaded Data for " + args.get("username")
+
+
 app.run(host='0.0.0.0', port=int(os.environ["PORT"]))
