@@ -1,17 +1,13 @@
 import Head from 'next/head'
-import Image from 'next/image'
+// import Image from 'next/image'
 import { Inter, Roboto } from '@next/font/google'
-import styles from '@/styles/Home.module.css'
+// import styles from '@/styles/Home.module.css'
 import HwNavBar from 'components/HwNavBar'
-import DatePicker from 'tailwind-datepicker-react'
-import { useState } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 const roboto = Roboto({ subsets: ['latin'], weight: '400'})
 
 export default function Home() {
-  const [showDatePicker, setShowDatePicker] = useState<boolean>(false)
-
 
   return (
     <>
