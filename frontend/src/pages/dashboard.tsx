@@ -225,7 +225,7 @@ const Dashboard = () => {
                     <Image unoptimized src="/dalleImg.png" alt="hero" width={718} height={718} className="blur-3xl scale-x-[2.3] scale-150 opacity-80 " />
                 </div>
                 <div className="mt-24 my-8 opacity-100 w-full sm:px-10 px-8">
-                    <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl text-center my-2">
+                    <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl text-center my-4">
                         Upcoming Assignments
                     </h2>
                     {/* <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-4"> */}

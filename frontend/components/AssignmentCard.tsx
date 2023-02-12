@@ -54,19 +54,19 @@ const AssignmentCard = ({ assignment, onChangeSplitable, onDifficultyChange }: A
                             <div className="flex flex-row gap-x-1">
                                 <span className="font-bold pr-2"> Difficulty: </span>
                                 {/* @ts-ignore */}
-                                <button title="Increase" onClick={() => handleChangeDifficulty({ target: { value: difficulty - 1 } })} 
-                                    className="text-darkBlue hover:text-gray-900"
+                                <button title="Decrease" onClick={() => handleChangeDifficulty({ target: { value: difficulty - 1 } })} 
+                                    className="text-darkBlue hover:text-gray-900 hover:scale-110"
                                     >
                                     <MinusIcon className="h-5 w-5" />
                                 </button>
                                 <input
-                                    className="font-bold w-10 bg-lightSand text-darkBlue text-center"
+                                    className="font-bold w-10 bg-lightSand text-darkBlue text-center selection:bg-white"
                                     value={difficulty} 
                                     onChange={handleChangeDifficulty}
                                 />
                                 {/* @ts-ignore */}
-                                <button title="Decrease" onClick={() => handleChangeDifficulty({ target: { value: difficulty + 1 } })} 
-                                    className="text-darkBlue hover:text-gray-900">
+                                <button title="Increase" onClick={() => handleChangeDifficulty({ target: { value: difficulty + 1 } })} 
+                                    className="text-darkBlue hover:text-gray-900 hover:scale-110">
                                     <PlusIcon className="h-5 w-5" />
                                 </button>
                             </div>
