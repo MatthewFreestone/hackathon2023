@@ -17,7 +17,7 @@ def send_request():
             headers=headers)
 
         for j in range(len(assignments.json())):
-            due_dates = str(" " + assignments.json()[j]["due_at"][:10]).replace("-", "/")
+            due_dates = str(" " + assignments.json()[j]["due_at"][:10])
             name = str(" " + assignments.json()[j]["name"])
             course_name = name
             assignment_list.append((due_dates, named, course_name))
