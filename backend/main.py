@@ -1,10 +1,12 @@
 from flask import Flask, request
 from db import Assignment, User
+from sms import text
 
 app=Flask("")
 
 @app.route("/")
 def home():
+    text(2567443336, "this is a test message.")
     return "hello world"
 
 @app.route("/loaddata", methods=["GET"])
@@ -42,4 +44,4 @@ def get_recommended_schedule():
     return "Getting schedule for {username} with the token {token}".format(username=args.get("username"),
                                                                            token=args.get("token"))
 
-app.run(host='0.0.0.0', port=80)	
+app.run(host='0.0.0.0', port=8080)
