@@ -3,6 +3,8 @@ from flask_cors import CORS
 from db import Assignment, User, set_db_test_data
 from sms import text
 from token_auth import encode, decode
+from openai_responses import get_congrats_message, get_encourage_message
+from sorting import newSortAssignments
 from dotenv import load_dotenv
 import os
 
@@ -12,20 +14,11 @@ CORS(app)
 
 @app.route("/")
 def home():
-    # For texting
-    # text(2567443336, "this is a test message.")
-
-    # For encoded and decoded tokens
-    # args = request.args
-    # username = args.get("username")
-    # encoded = encode(username)
-    # decoded = decode(encoded)
-    #return str(encoded) + " : " + str(decoded)
 
     return "hello world"
 
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
     args = request.args
     if not User.is_valid(args.get("username"), args.get("password")):
@@ -51,40 +44,89 @@ def load_data():
     return {"user": user.json(), "assignments": [a.json() for a in Assignment.find_all(user.username)]}
 
 
-@app.route("/setdifficulty", methods=["POST"])
-def set_difficulty():
+@app.route("/setassignments", methods=["POST"])
+def set_assignments():
     args = request.args
-    valid, user = decode(args.get("token"))
+    valid, username = decode(args.get("token"))
     if not valid:
         return {"error": "Invalid token"}
-    assignment = Assignment.find(args.get("id"), user)
-    if assignment is None:
-        return {"error": "Invalid id"}
-    assignment.difficulty = int(args.get("difficulty"))
-    assignment.save()
-    return assignment.json()
+    ids = args.get("ids").split(",")
+    difficulties = list(map(int, args.get("difficulties").split(",")))
+    splittables = list(map(lambda x:x=="true", args.get("splittables").split(",")))
+    
+    for i in range(len(ids)):
+        assignment = Assignment.find(ids[i], username)
+        assignment.difficulty = difficulties[i]
+        assignment.splittable = splittables[i]
+        assignment.save()
+    return {"success": True}
 
 
-@app.route("/setpercentage", methods=["POST"])
+@app.route("/setpercentages", methods=["POST"])
 def set_percentage():
     args = request.args
-    return "Set day: " + str(args.get("day")) + " to percentage: " + str(args.get("percentage"))
+    valid, username = decode(args.get("token"))
+    if not valid:
+        return {"error": "Invalid token"}
+    user = User.find(username)
+    if user is None:
+        return {"error": "Unknown user"}
+
+    user.percents = list(map(int, args.get("percentages").split(",")))
+    user.save()
+    return user.json()
 
 
 @app.route("/setcalendar", methods=["POST"])
 def set_calendar():
     args = request.args
-    return """Set anchor: {anchor} with num of work days as: {work_days} and
-            num of vacation days as: {vac_days}""".format(anchor=args.get("anchor"),
-                                                          work_days=args.get("workdays"),
-                                                          vac_days=args.get("vacdays"))
+    valid, username = decode(args.get("token"))
+    if not valid:
+        return {"error": "Invalid token"}
+    user = User.find(username)
+    if user is None:
+        return {"error": "Unknown user"}
+
+    user.set_calendar(args.get("anchor"), int(args.get("work_days")), int(args.get("vacation_days")))
+    user.save()
+    return user.json()
 
 
-@app.route("/getrecschedule", methods=["GET"])
+@app.route("/getschedule", methods=["GET"])
 def get_recommended_schedule():
     args = request.args
-    return "Getting schedule for {username} with the token {token}".format(username=args.get("username"),
-                                                                           token=args.get("token"))
+    valid, username = decode(args.get("token"))
+    if not valid:
+        return {"error": "Invalid token"}
+    user = User.find(username)
+    if user is None:
+        return {"error": "Unknown user"}
+
+    assignments = Assignment.find_all(username)
+    for a in assignments:
+        a.day(user.anchor)
+    return newSortAssignments(assignments, user.percents)
+
+
+@app.route("/sendmorningmessage", methods=["GET"])
+def send_morning_message():
+    args = request.args
+    valid, user = decode(args.get("token"))
+    if not valid:
+        return {"error": "Invalid token"}
+    cur_user = User.find(user)
+    text(cur_user.phone, get_encourage_message())
+    return "Success"
+
+@app.route("/sendeveningmessage", methods=["GET"])
+def send_evening_message():
+    args = request.args
+    valid, user = decode(args.get("token"))
+    if not valid:
+        return {"error": "Invalid token"}
+    cur_user = User.find(user)
+    text(cur_user.phone, get_congrats_message())
+    return "Success"
 
 
 app.run(host='0.0.0.0', port=int(os.environ["PORT"]))

@@ -11,14 +11,26 @@ db = MongoClient(os.environ["MONGODB"]).prod
 def set_db_test_data():
     db.users.delete_many({})
     db.assignments.delete_many({})
-    User("david", "ab6390fda83e002acd5fc06081305679a3b10cca6b983b7f86e1f9ff6db37b35", "2023/03/13", 5, 3).save()
-    User("matthew", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "2023/03/13", 5, 3).save()
-    User("joshua", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "2023/03/13", 5, 3).save()
-    User("caden", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "2023/03/13", 5, 3).save()
+    User("david", "ab6390fda83e002acd5fc06081305679a3b10cca6b983b7f86e1f9ff6db37b35",
+        int(os.environ["DAVIDPHONE"]), "2023-02-13", 5, 3).save()
+    User("MatthewFreestone", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
+        int(os.environ["MATTHEWPHONE"]), "2023-02-13", 5, 3).save()
+    User("caden", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
+        int(os.environ["CADENPHONE"]), "2023-02-13", 5, 3).save()
+    User("joshua", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
+        int(os.environ["CADENPHONE"]), "2023-02-13", 5, 3).save()
 
-    Assignment("matthew", "Cloud Quiz", "COMP5530", "2023/03/15").save()
-    Assignment("matthew", "Problem Set #2", "MATH6660", "2023/03/18").save()
-    Assignment("matthew", "Midterm Paper", "COMP5530", "2023/03/17").save()
+    Assignment("MatthewFreestone", "Cloud Quiz", "COMP5530", "2023-02-15").save()
+    Assignment("MatthewFreestone", "Problem Set #2", "STAT6660", "2023-02-18").save()
+    Assignment("MatthewFreestone", "Midterm Paper", "ENGL2200", "2023-02-17").save()
+    Assignment("MatthewFreestone", "Group Project #3", "COMP5530", "2023-02-19").save()
+    Assignment("MatthewFreestone", "Midterm Exam - ProctorU", "COMP4320", "2023-02-16").save()
+    Assignment("MatthewFreestone", "HW #2- TCP/IP", "COMP4320", "2023-02-15").save()
+    Assignment("david", "Small Quiz", "COMP", "2023-02-16").save()
+    Assignment("david", "Coding", "COMP", "2023-02-17").save()
+    Assignment("david", "Big Paper", "ENGL", "2023-02-18").save()
+    Assignment("david", "Essay Quiz", "ENGL", "2023-02-18").save()
+    Assignment("david", "Problem Set", "MATH", "2023-02-15").save()
 
 class ABCDatabasable:
     def __init__(self, a, *args):
@@ -38,8 +50,11 @@ class ABCDatabasable:
 
     def dict(self, include_id=True):
         d = self.__dict__
-        if "_id" in d and not include_id:
-            del d["_id"]
+        if "_id" in d:
+            if include_id:
+                d["_id"] = str(d["_id"])
+            else:
+                del d["_id"]
         return d
 
     def json(self):
@@ -55,15 +70,25 @@ class User(ABCDatabasable):
     collection_name = "users"
     id_in_json = False
 
-    def _from_scratch(self, username, passwordhash, anchor, work, vacation):
+    def _from_scratch(self, username, passwordhash, phone, anchor, work_days, vacation_days):
         self.username = username
         self.passwordhash = passwordhash
+        self.phone = phone
         self.anchor = anchor
-        self.work = work
-        self.vacation = vacation
+        self.work_days = work_days
+        self.vacation_days = vacation_days
+        self.set_percents(work_days)
 
-    def json(self):
-        return self.dict(False)
+    def set_percents(self, days):
+        extra = 100%days
+        self.percents = [100//days + (1 if i<extra else 0) for i in range(days)]
+
+    def set_calendar(self, anchor, work_days, vacation_days):
+        self.anchor = anchor
+        self.vacation_days = vacation_days
+        if self.work_days != work_days:
+            self.set_percents(work_days)
+            self.work_days = work_days
 
     @classmethod
     def find(cls, username):
@@ -79,28 +104,26 @@ class Assignment(ABCDatabasable):
     collection_name = "assignments"
     id_in_json = True
     
-    def _from_scratch(self, user, name, course, due_date):
+    def _from_scratch(self, user, name, course, due_date, difficulty=1, splittable=True):
         self.user = user
         self.name = name
         self.course = course
         self.due_date = due_date
-        self.difficulty = 1
+        self.difficulty = difficulty
+        self.splittable = splittable
+
+    def day(self, anchor):
+        _, m1, d1 = map(int, anchor.split("-"))
+        _, m2, d2 = map(int, self.due_date.split("-"))
+        self.max_day = d2 - d1 + (28 if m2>m1 else 0)
+        if self.splittable:
+            self.left = 5
 
     @classmethod
     def find(cls, ID, username):
-        print(ID, username)
         db_entry = db.assignments.find_one({"_id": ObjectId(ID), "user": username})
         return None if db_entry is None else cls(db_entry)
 
     @classmethod
     def find_all(cls, username):
-        return list(map(cls, db.assignments.find({"user": username})))
-
-if __name__=="__main__":
-    ID = "63e896e4fadbfb97da27658a"
-    username = "matthew"
-    a = Assignment(db.assignments.find_one({"_id": ObjectId(ID), "user": username}))
-    #print(a.dict(False))
-    #db.assignments.update_one({"_id": ObjectId(ID)}, {"$set": {'user': 'matthew', 'name': 'Cloud Quiz', 'course': 'COMP5530', 'due_date': '2023/03/15', 'difficulty': 50}})
-    a.difficulty = 5
-    a.save()
+        return sorted(list(map(cls, db.assignments.find({"user": username}))), key=lambda x:x.due_date)
