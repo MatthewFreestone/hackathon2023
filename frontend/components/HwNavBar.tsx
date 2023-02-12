@@ -6,8 +6,8 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 
 const navigation = [
-  { name: 'Planner', href: '#', current: true },
-//   { name: 'Profile', href: '#', current: false },
+  { name: 'Planner', href: 'dashboard', current: true },
+  { name: 'Results', href: 'results', current: false },
 //   { name: 'Projects', href: '#', current: false },
 //   { name: 'Calendar', href: '#', current: false },
 ]
@@ -54,7 +54,7 @@ export default function HwNavBar({ showSignIn } : HwNavBarProps) {
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex space-x-4 h-full">
                     {!showSignIn && navigation.map((item) => (
-                      <a
+                      <Link
                         key={item.name}
                         href={item.href}
                         className={classNames(
@@ -64,7 +64,7 @@ export default function HwNavBar({ showSignIn } : HwNavBarProps) {
                         aria-current={item.current ? 'page' : undefined}
                       >
                         {item.name}
-                      </a>
+                      </Link>
                     ))}
                     {showSignIn && (
                         <div className='my-auto'>

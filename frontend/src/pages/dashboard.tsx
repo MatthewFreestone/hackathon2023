@@ -6,6 +6,7 @@ import AssignmentCard from "components/AssignmentCard";
 import DayCard from "components/DayCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 type Assignment = {
     course: string,
@@ -25,6 +26,7 @@ type WorkDay = {
 
 const Dashboard = () => { 
     const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
+    const router = useRouter()
     let currentDate = new Date()
     currentDate.setHours(0, 0, 0, 0)
 
@@ -46,14 +48,10 @@ const Dashboard = () => {
     const [validWorkPercentage, setValidWorkPercentage] = useState<boolean>(true)
 
     useEffect(() => {
-        console.log("i got here")
         if (workDays){
             const percentages = workDays.map((workDay) => workDay.percentage)
             setTotalWorkPercentage(percentages.reduce((a, b) => a + b, 0))
-            // console.log()
             setValidWorkPercentage(percentages.reduce((a, b) => a + b, 0) === 100)
-                // percentages.every((percentage) => percentage >= 0 && percentage <= 100) && 
-            // console.log("validpercentage?", validWorkPercentage)
         }
     }, [workDays])
 
@@ -73,7 +71,7 @@ const Dashboard = () => {
     useEffect(() => {
         const token = localStorage.getItem('token')
         if (!token) {
-            document.location.href = '/signin'
+            router.push('/signin')
         }
         const dest = `${BACKEND_URL}/loaddata?token=${token}`
         axios.get(dest)
@@ -82,7 +80,7 @@ const Dashboard = () => {
                 console.error("Invalid or Missing Token")
                 return
             }
-            console.log(res.data.assignments)
+            console.log(res.data)
             setAssignments(res.data.assignments)
         })
         .catch((err) => {
@@ -91,10 +89,14 @@ const Dashboard = () => {
         )
     }, [])
 
+    useEffect(() => {
+        console.log(assignments)
+    }, [assignments])
+
     const updateAssignments = () => {
         const token = localStorage.getItem('token')
         if (!token) {
-            document.location.href = '/signin'
+            router.push('/signin')
         }
         let ids = ""
         let difficulties = ""
@@ -136,6 +138,7 @@ const Dashboard = () => {
             }
             console.log(res.data)
             createWorkDayCards(res.data.percents)
+            localStorage.setItem('anchorDate', anchorDate.toJSON())
             console.log(workDays)
         })
         .catch((err) => {
@@ -187,6 +190,26 @@ const Dashboard = () => {
         document.location.href = '#availability'
     }
 
+    const handleSubmitPercentage = () => {
+        const token = localStorage.getItem('token')
+        if (!token) {
+            router.push('/signin')
+        }
+        const percentages = workDays.map((workDay) => workDay.percentage)
+        const destination = `${BACKEND_URL}/setpercentages?token=${token}&percentages=${percentages}`
+        axios.post(destination).then((res) => {
+            if (res.data.error) {
+                console.error("Error in updating percentages")
+                return
+            }
+            console.log(res.data)
+            router.push('/results')
+        }).catch((err) => {
+            console.log(err)
+        }
+        )
+    }
+
     return (
         <>
             <Head>
@@ -207,7 +230,7 @@ const Dashboard = () => {
                     </h2>
                     {/* <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-4"> */}
                     <div className="flex justify-center flex-wrap gap-10">
-                        {assignments.length !== 0 && assignments.map((assignment) => {
+                        {assignments && assignments.length !== 0 && assignments.map((assignment) => {
                             return (
                                 <div className="flex justify-center" key={assignment._id}>
                                     <AssignmentCard
@@ -335,6 +358,18 @@ const Dashboard = () => {
                                     <span>Total Work Percentage: </span>
                                     <span className={validWorkPercentage ? "text-green-500":"text-red-500"}>
                                          {`${totalWorkPercentage}%`}</span>
+                                </div>
+                                <div>
+                                    <button
+                                         className={`rounded-md lg:px-5 lg:py-3 px-3.5 py-1.5 
+                                         text-base font-semibold leading-7 text-white shadow-sm
+                                         focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 
+                                         focus-visible:outline-white mt-4 ${!validWorkPercentage ? "cursor-not-allowed bg-red-500 border-white border disabled " : " bg-darkBlue  hover:bg-lightBlue "}`}
+                                     
+                                        onClick={validWorkPercentage ? handleSubmitPercentage: () => {}}
+                                    >
+                                        Submit
+                                    </button>
                                 </div>
                             </div>
                         )}

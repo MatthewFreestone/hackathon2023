@@ -3,11 +3,12 @@ import { SunIcon } from '@heroicons/react/24/solid'
 import Image from 'next/image'
 import { useState } from 'react'
 import axios from 'axios'
-import { Redirect } from 'next'
+import { useRouter } from 'next/router'
 
 export default function signin() {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
+    const router = useRouter()
 
     const handleSubmit = (e: any) => {
         const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
@@ -25,7 +26,8 @@ export default function signin() {
             console.log(res.data)
             localStorage.setItem('token', res.data.token)
             localStorage.setItem('username', username)
-            document.location.href = '/dashboard'
+            
+            router.push('/dashboard')
         })
         .catch((err) => {
             console.log(err)
