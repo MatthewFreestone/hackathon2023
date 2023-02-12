@@ -118,7 +118,6 @@ class Assignment(ABCDatabasable):
 
     @classmethod
     def find(cls, ID, username):
-        print(ID, username)
         db_entry = db.assignments.find_one({"_id": ObjectId(ID), "user": username})
         return None if db_entry is None else cls(db_entry)
 
