@@ -3,6 +3,7 @@ from flask_cors import CORS
 from db import Assignment, User, set_db_test_data
 from sms import text
 from token_auth import encode, decode
+from openai_responses import get_congrats_message, get_encourage_message
 from dotenv import load_dotenv
 import os
 
@@ -21,7 +22,6 @@ def home():
     # encoded = encode(username)
     # decoded = decode(encoded)
     #return str(encoded) + " : " + str(decoded)
-
     return "hello world"
 
 
