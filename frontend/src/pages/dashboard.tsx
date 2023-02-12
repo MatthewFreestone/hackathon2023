@@ -221,8 +221,8 @@ const Dashboard = () => {
             <main className="flex flex-col items-center w-full min-h-screen ">
                 <HwNavBar currentTab="Dashboard"/>
                 <div className="absolute -z-10">
-                    <Image src="/dalleImg.png" alt="hero" width={718} height={718} className="blur-3xl scale-x-[2.3] scale-150 opacity-80 " />
-                    <Image src="/dalleImg.png" alt="hero" width={718} height={718} className="blur-3xl scale-x-[2.3] scale-150 opacity-80 " />
+                    <Image unoptimized src="/dalleImg.png" alt="hero" width={718} height={718} className="blur-3xl scale-x-[2.3] scale-150 opacity-80 " />
+                    <Image unoptimized src="/dalleImg.png" alt="hero" width={718} height={718} className="blur-3xl scale-x-[2.3] scale-150 opacity-80 " />
                 </div>
                 <div className="mt-24 my-8 opacity-100 w-full sm:px-10 px-8">
                     <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl text-center my-2">

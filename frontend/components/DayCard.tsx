@@ -42,6 +42,7 @@ const DayCard = ({ date, percentage, assignments, onPercentageChange }: DayCardP
                         <div className="text-gray-700 text-base">
                             <div className="flex flex-row gap-x-1">
                                 <span className="font-bold pr-2"> Percentage of Work: </span>
+                                {/* @ts-ignore */}
                                 <button title="Increase" onClick={() => handleChangePercentage({ target: { value: percentage - 1 } })} >
                                     <MinusIcon className="h-5 w-5 text-darkBlue" />
                                 </button>
@@ -50,6 +51,7 @@ const DayCard = ({ date, percentage, assignments, onPercentageChange }: DayCardP
                                     value={percentage} 
                                     onChange={handleChangePercentage}
                                 />
+                                {/* @ts-ignore */}
                                 <button title="Decrease" onClick={() => handleChangePercentage({ target: { value: percentage + 1 } })} className="text-gray-600 hover:text-gray-900">
                                     <PlusIcon className="h-5 w-5 text-darkBlue" />
                                 </button>

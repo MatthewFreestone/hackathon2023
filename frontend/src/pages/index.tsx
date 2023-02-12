@@ -20,7 +20,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex flex-col items-center w-full min-h-screen">
-        <Image src="/dalleImg.png" alt="hero" width={718} height={718} className="absolute blur-lg w-screen h-screen overflow-hidden opacity-80" />
+        <Image unoptimized src="/dalleImg.png" alt="hero" width={718} height={718} className="absolute blur-lg w-screen h-screen overflow-hidden opacity-80" />
         <HwNavBar showSignIn={true}/>
         <div className="relative w-full lg:px-8 px-6">
           <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">

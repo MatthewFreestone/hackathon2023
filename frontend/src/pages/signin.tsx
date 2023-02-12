@@ -43,7 +43,7 @@ export default function Signin() {
         <body class="h-full">
         ```
       */}
-      <Image src="/dalleImg.png" alt="hero" width={718} height={718} className="absolute w-screen h-screen blur-2xl opacity-80"/>
+      <Image unoptimized src="/dalleImg.png" alt="hero" width={718} height={718} className="absolute w-screen h-screen blur-2xl opacity-80"/>
       <div className=" relative flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-md space-y-8">
           <div>

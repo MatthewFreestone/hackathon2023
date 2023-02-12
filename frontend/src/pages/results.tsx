@@ -22,6 +22,7 @@ const Results = () => {
     useEffect(() => {
         const token = localStorage.getItem('token')
         if (localStorage.getItem('anchorDate')) {
+            {/* @ts-ignore */}
             setAnchorDate(new Date(localStorage.getItem('anchorDate')))
         }
         if (!token) {
@@ -69,7 +70,7 @@ const Results = () => {
         <main className="flex flex-col items-center w-full min-h-screen ">
             <HwNavBar currentTab="Results"/>
             <div className="absolute -z-10">
-                <Image src="/dalleImg.png" alt="hero" width={718} height={718} className="blur-3xl scale-x-[2.3] scale-150 opacity-80 " />
+                <Image unoptimized src="/dalleImg.png" alt="hero" width={718} height={718} className="blur-3xl scale-x-[2.3] scale-150 opacity-80 " />
             </div>
             <div className="relative w-full lg:px-8 px-6 mt-32">
                 <h1 className="text-4xl font-bold text-center my-4" 

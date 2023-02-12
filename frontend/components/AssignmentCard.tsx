@@ -53,6 +53,7 @@ const AssignmentCard = ({ assignment, onChangeSplitable, onDifficultyChange }: A
                         <div className="text-gray-700 text-base">
                             <div className="flex flex-row gap-x-1">
                                 <span className="font-bold pr-2"> Difficulty: </span>
+                                {/* @ts-ignore */}
                                 <button title="Increase" onClick={() => handleChangeDifficulty({ target: { value: difficulty - 1 } })} >
                                     <MinusIcon className="h-5 w-5 text-darkBlue" />
                                 </button>
@@ -61,6 +62,7 @@ const AssignmentCard = ({ assignment, onChangeSplitable, onDifficultyChange }: A
                                     value={difficulty} 
                                     onChange={handleChangeDifficulty}
                                 />
+                                {/* @ts-ignore */}
                                 <button title="Decrease" onClick={() => handleChangeDifficulty({ target: { value: difficulty + 1 } })} className="text-gray-600 hover:text-gray-900">
                                     <PlusIcon className="h-5 w-5 text-darkBlue" />
                                 </button>
