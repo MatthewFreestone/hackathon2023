@@ -1,10 +1,17 @@
 from flask import Flask, request
+from pymongo import MongoClient
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
+
+print(os.environ["TEST"])
+#db = MongoClient()
 app=Flask("")
 
 @app.route("/")
 def home():
-	return "hello world"
+    return "hello world"
 
 @app.route("/loaddata", methods=["GET"])
 def load_data():
@@ -40,5 +47,5 @@ def get_recommended_schedule():
                                                                            token=args.get("token"))
 
 
-app.run(host='0.0.0.0', port=80)	
+#app.run(host='0.0.0.0', port=80)	
 
