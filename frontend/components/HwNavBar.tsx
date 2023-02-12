@@ -2,6 +2,7 @@ import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon, UserCircleIcon } from '@heroicons/react/24/outline'
 import { SunIcon } from '@heroicons/react/24/solid'
+import Link from 'next/link'
 
 const navigation = [
   { name: 'Planner', href: '#', current: true },
@@ -37,8 +38,8 @@ export default function HwNavBar({ showSignIn } : HwNavBarProps) {
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex flex-shrink-0 items-center">
-                  <a href="/"><SunIcon className='h-9 w-auto text-darkSand lg:hidden'/></a>
-                  <a href="/"><SunIcon className='h-9 w-auto text-darkSand lg:block hidden'/></a>
+                  <Link href="/"><SunIcon className='h-9 w-auto text-darkSand lg:hidden'/></Link>
+                  <Link href="/"><SunIcon className='h-9 w-auto text-darkSand lg:block hidden'/></Link>
                 </div>
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex space-x-4 h-full">
@@ -114,7 +115,7 @@ export default function HwNavBar({ showSignIn } : HwNavBarProps) {
                       <Menu.Item>
                         {({ active }) => (
                           <a
-                            href="#"
+                            href="/signin"
                             className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                           >
                             Sign out
@@ -127,14 +128,14 @@ export default function HwNavBar({ showSignIn } : HwNavBarProps) {
               </div>)}
               {showSignIn && (
                 <div className='flex'>
-                    <a
-                        href="#"
+                    <Link
+                        href="/signin"
                         className="rounded-full bg-darkBlue p-1 text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                     >
                         <span className='text-lg font-sans font-semibold leading-6'>
                             Sign in <span aria-hidden="true">&rarr;</span>
                         </span>
-                    </a>
+                    </Link>
                 </div>
 
                 )}

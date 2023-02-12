@@ -2,13 +2,25 @@ import HwNavBar from "components/HwNavBar";
 import Head from "next/head";
 import Image from "next/image";
 import DatePicker from 'tailwind-datepicker-react'
+import AssignmentCard from "components/AssignmentCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
+
+type Assignment = {
+    course: string,
+    difficulty: number,
+    splittable: boolean,
+    due_date: string,
+    name: string,
+    user: string,
+    _id: string,
+}
 
 const Dashboard = () => { 
     const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
     let currentDate = new Date()
     currentDate.setHours(0, 0, 0, 0)
+
     const [startDate, setStartDate] = useState<Date>(currentDate)
     const [endDate, setEndDate] = useState<Date>(currentDate)
     const [anchorDate, setAnchorDate] = useState<Date>(currentDate)
@@ -19,10 +31,12 @@ const Dashboard = () => {
 
     const [endDateInvalid, setEndDateInvalid] = useState<boolean>(false)
 
+    const [assignments, setAssignments] = useState<Assignment[]>([])
+
     useEffect(() => {
-        console.log("startDate: ", startDate)
-        console.log("endDate: ", endDate)
-        console.log("anchorDate: ", anchorDate)
+        // console.log("startDate: ", startDate)
+        // console.log("endDate: ", endDate)
+        // console.log("anchorDate: ", anchorDate)
         if (!startDate || !endDate || !anchorDate || endDate < startDate || anchorDate > startDate ) {
             console.log("Selected Dates are Invalid")
             setEndDateInvalid(true)
@@ -31,6 +45,56 @@ const Dashboard = () => {
         }
     }, [endDate, startDate, anchorDate])
 
+    useEffect(() => {
+        const token = localStorage.getItem('token')
+        if (!token) {
+            document.location.href = '/signin'
+        }
+        const dest = `${BACKEND_URL}/loaddata?token=${token}`
+        axios.get(dest)
+        .then((res) => {
+            if (res.data.error) {
+                console.error("Invalid or Missing Token")
+                return
+            }
+            console.log(res.data.assignments)
+            setAssignments(res.data.assignments)
+        })
+        .catch((err) => {
+            console.log(err)
+        }
+        )
+    }, [])
+
+    useEffect(() => {
+        const token = localStorage.getItem('token')
+        if (!token) {
+            document.location.href = '/signin'
+        }
+        let ids = ""
+        let difficulties = ""
+        let splittables = ""
+        assignments.map((assignment) => {
+            ids += assignment._id + ","
+            difficulties += assignment.difficulty + ","
+            splittables += assignment.splittable + ","
+        })
+        if (ids){
+            // remove trailing comma
+            ids = ids.slice(0, -1)
+            difficulties = difficulties.slice(0, -1)
+            splittables = splittables.slice(0, -1)
+            const dest = `${BACKEND_URL}/setassignments?token=${token}&ids=${ids}&difficulties=${difficulties}&splittables=${splittables}`
+            axios.post(dest)
+            .then((res) => {
+                console.log(res.data)
+            })
+            .catch((err) => {
+                console.error(err)
+            })
+        }
+        
+    }, [assignments])
     const datepickerOptions = {
         title: "",
         autoHide: false,
@@ -77,8 +141,41 @@ const Dashboard = () => {
             </Head>
             <main className="flex flex-col items-center w-full min-h-screen">
                 <HwNavBar />
-                <Image src="/dalleImg.png" alt="hero" width={718} height={718} className="absolute blur-3xl scale-x-[2.3] scale-150 opacity-80" />
-                <div className="relative mt-24 flex flex-col items-center">
+                <Image src="/dalleImg.png" alt="hero" width={718} height={718} className="absolute blur-3xl scale-x-[2.3] scale-150 opacity-80 -z-10" />
+                <div className="mt-24 my-8 opacity-100 w-full sm:px-10 px-8">
+                    <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl text-center my-2">
+                        Upcoming Assignments
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                        {assignments.length !== 0 && assignments.map((assignment) => {
+                            return (
+                                <AssignmentCard
+                                    assignment={assignment}
+                                    onDifficultyChange={(value) => {
+                                        console.log("Changing difficulty of ", assignment.name, " to ", value)
+                                        assignment.difficulty = value
+                                    }}
+                                    onChangeSplitable={(value) => {
+                                        console.log("Changing splittable of ", assignment.name, " to ", value)
+                                        assignment.splittable = value
+                                    }}
+                                    key={assignment._id}
+                                />
+                            )
+                        })}
+                    </div>
+
+                    {assignments.length === 0 && (
+
+                        <div className="flex flex-col items-center justify-center w-full">
+                            <h2 className="text-2xl font-bold tracking-tight text-center text-gray-400 sm:text-3xl my-2">
+                                Loading Assignments ...
+                            </h2>
+                        </div>)
+                    }
+
+                </div>
+                <div className="relative flex flex-col items-center">
                     <h2 className="text-3xl font-bold tracking-tight text-white-900 sm:text-4xl">
                         I want to take a vacation on
                     </h2>
@@ -130,6 +227,7 @@ const Dashboard = () => {
                         {endDateInvalid ? "Selected Dates are Invalid": "Calculate my work distribution"}
                     </button>
                 </div>
+                
             </main>
         </>
     );
