@@ -36,7 +36,12 @@ def sortAssignments(assignments, datePercents):
 def stupidSortAssignments(assignments, percents):
     total_diff = sum(a.difficulty for difficulty in assignment)
     target_diffs = [total_diff*p/100 for p in percents]
-    best = 
+    best = (inf, inf)   #squared error, splits
+    best_order = None
     for _ in range(1000):
         assignments.shuffle()
+        a, day, swaps, error = 0, 0, 0, 0.0
+        while a<len(assignments):
+            
 
+if __name__=="__main__":
