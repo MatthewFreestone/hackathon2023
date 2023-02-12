@@ -1,6 +1,7 @@
 from flask import Flask, request
 from pymongo import MongoClient
 from dotenv import load_dotenv
+from sms import text
 import os
 
 load_dotenv()
@@ -11,6 +12,7 @@ app=Flask("")
 
 @app.route("/")
 def home():
+    text(2567443336, "this is a test message.")
     return "hello world"
 
 @app.route("/loaddata", methods=["GET"])
@@ -47,5 +49,5 @@ def get_recommended_schedule():
                                                                            token=args.get("token"))
 
 
-#app.run(host='0.0.0.0', port=80)	
+app.run(host='0.0.0.0', port=8080)
 
