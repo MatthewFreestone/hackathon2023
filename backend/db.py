@@ -13,21 +13,24 @@ def set_db_test_data():
     db.assignments.delete_many({})
     User("david", "ab6390fda83e002acd5fc06081305679a3b10cca6b983b7f86e1f9ff6db37b35",
         int(os.environ["DAVIDPHONE"]), "2023-03-13", 5, 3).save()
-    User("matthew", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
+    User("MatthewFreestone", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
         int(os.environ["MATTHEWPHONE"]), "2023-03-13", 5, 3).save()
     User("caden", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
         int(os.environ["CADENPHONE"]), "2023-03-13", 5, 3).save()
     User("joshua", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
         int(os.environ["CADENPHONE"]), "2023-03-13", 5, 3).save()
 
-    Assignment("matthew", "Cloud Quiz", "COMP5530", "2023-03-15").save()
-    Assignment("matthew", "Problem Set #2", "MATH6660", "2023-03-18").save()
-    Assignment("matthew", "Midterm Paper", "COMP5530", "2023-03-17").save()
-    Assignment("david", "Small Quiz", "COMP", "2023-02-16", 1, False).save()
-    Assignment("david", "Coding", "COMP", "2023-02-17", 5).save()
-    Assignment("david", "Big Paper", "ENGL", "2023-02-18", 10).save()
-    Assignment("david", "Essay Quiz", "ENGL", "2023-02-18", 3, False).save()
-    Assignment("david", "Problem Set", "MATH", "2023-02-15", 10).save()
+    Assignment("MatthewFreestone", "Cloud Quiz", "COMP5530", "2023-03-15").save()
+    Assignment("MatthewFreestone", "Problem Set #2", "STAT6660", "2023-03-18").save()
+    Assignment("MatthewFreestone", "Midterm Paper", "ENGL", "2023-03-17").save()
+    Assignment("MatthewFreestone", "Group Project #3", "COMP5530", "2023-03-19").save()
+    Assignment("MatthewFreestone", "Midterm Exam - ProctorU", "COMP4320", "2023-03-16").save()
+    Assignment("MatthewFreestone", "HW #2- TCP/IP", "COMP4320", "2023-03-15").save()
+    Assignment("david", "Small Quiz", "COMP", "2023-02-16").save()
+    Assignment("david", "Coding", "COMP", "2023-02-17").save()
+    Assignment("david", "Big Paper", "ENGL", "2023-02-18").save()
+    Assignment("david", "Essay Quiz", "ENGL", "2023-02-18").save()
+    Assignment("david", "Problem Set", "MATH", "2023-02-15").save()
 
 class ABCDatabasable:
     def __init__(self, a, *args):
