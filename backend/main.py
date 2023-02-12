@@ -47,4 +47,4 @@ def get_recommended_schedule():
     return "Getting schedule for {username} with the token {token}".format(username=args.get("username"),
                                                                            token=args.get("token"))
 
-app.run(host='0.0.0.0', port=os.environ["PORT"])
+app.run(host='0.0.0.0', port=int(os.environ["PORT"]))
