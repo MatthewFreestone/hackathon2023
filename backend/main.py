@@ -16,7 +16,6 @@ CORS(app)
 def home():
     return send_from_directory(app.static_folder, "index.html")
 
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     args = request.args
@@ -85,7 +84,7 @@ def set_calendar():
     user = User.find(username)
     if user is None:
         return {"error": "Unknown user"}
-
+    
     user.set_calendar(args.get("anchor"), int(args.get("work_days")), int(args.get("vacation_days")))
     user.save()
     return user.json()
