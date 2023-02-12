@@ -36,7 +36,7 @@ export default function Home() {
               <Link href="/dashboard" className="rounded-md bg-darkBlue lg:px-5 lg:py-3 px-3.5 py-1.5 text-base font-semibold leading-7 text-white shadow-sm hover:bg-lightBlue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
                 Get Started
               </Link>
-              <a href="https://github.com/MatthewFreestone/hackathon2023" target={"_blank"} className="rounded-md bg-opacity-40 bg-darkBlue border-darkBlue border-2 lg:px-5 lg:py-3 px-3.5 py-1.5 text-base font-semibold leading-7 text-white shadow-sm hover:bg-lightBlue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+              <a href="https://github.com/MatthewFreestone/hackathon2023" target={"_blank"}  rel="noreferrer" className="rounded-md bg-opacity-40 bg-darkBlue border-darkBlue border-2 lg:px-5 lg:py-3 px-3.5 py-1.5 text-base font-semibold leading-7 text-white shadow-sm hover:bg-lightBlue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
                 See the code
               </a>
             </div>
@@ -52,6 +52,7 @@ export default function Home() {
   )
 }
 
+// @ts-ignore
 const Review = ({ content }) => {
     return (
         <div className="flex flex-col w-1/4 h-min items-center justify-center rounded-lg bg-lightSand text-darkBlue p-5">
