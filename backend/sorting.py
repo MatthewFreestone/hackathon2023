@@ -1,4 +1,4 @@
-from classes import Assignment, User
+from db import Assignment, User
 from collections import defaultdict
 import random
 
