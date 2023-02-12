@@ -16,7 +16,7 @@ def home():
     return "hello world"
 
 
-@app.route("/login")
+@app.route("/login", methods=["POST"])
 def login():
     args = request.args
     if not User.is_valid(args.get("username"), args.get("password")):
