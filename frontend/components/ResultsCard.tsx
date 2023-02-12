@@ -15,10 +15,11 @@ const ResultsCard = ({ date, assignments }: DayCardProps) => {
                     </div>
                     <div className="flex items-center">
                         <ol className="text-sm text-black">
-                            {assignments?.map((assignment, index) => {
+                            {assignments?.length !== 0 && assignments?.map((assignment, index) => {
                                 return <li key={index}>{index+1}: {assignment}</li>
                             })
                             }
+                            {assignments?.length == 0 && <li>Nothing to do!</li>}
                         </ol>
                     </div>
                 </div>

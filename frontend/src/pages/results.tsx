@@ -75,7 +75,7 @@ const results = () => {
                 <h1 className="text-4xl font-bold text-center my-4" 
                 >
                     Your Study Plan</h1>
-                <div className="flex flex-row gap-2 flex-wrap">
+                <div className="flex flex-row gap-2 flex-wrap justify-center">
                     {dayCards.map((day, index) => {
                         return <ResultsCard key={index} date={day.date} assignments={day.assignments} />
                     })
