@@ -11,14 +11,18 @@ db = MongoClient(os.environ["MONGODB"]).prod
 def set_db_test_data():
     db.users.delete_many({})
     db.assignments.delete_many({})
-    User("david", "ab6390fda83e002acd5fc06081305679a3b10cca6b983b7f86e1f9ff6db37b35", "2023/03/13", 5, 3).save()
-    User("matthew", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "2023/03/13", 5, 3).save()
-    User("joshua", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "2023/03/13", 5, 3).save()
-    User("caden", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "2023/03/13", 5, 3).save()
+    User("david", "ab6390fda83e002acd5fc06081305679a3b10cca6b983b7f86e1f9ff6db37b35",
+        int(os.environ["DAVIDPHONE"]), "2023-03-13", 5, 3).save()
+    User("matthew", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
+        int(os.environ["MATTHEWPHONE"]), "2023-03-13", 5, 3).save()
+    User("caden", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
+        int(os.environ["CADENPHONE"]), "2023-03-13", 5, 3).save()
+    User("joshua", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
+        int(os.environ["CADENPHONE"]), "2023-03-13", 5, 3).save()
 
-    Assignment("matthew", "Cloud Quiz", "COMP5530", "2023/03/15").save()
-    Assignment("matthew", "Problem Set #2", "MATH6660", "2023/03/18").save()
-    Assignment("matthew", "Midterm Paper", "COMP5530", "2023/03/17").save()
+    Assignment("matthew", "Cloud Quiz", "COMP5530", "2023-03-15").save()
+    Assignment("matthew", "Problem Set #2", "MATH6660", "2023-03-18").save()
+    Assignment("matthew", "Midterm Paper", "COMP5530", "2023-03-17").save()
 
 class ABCDatabasable:
     def __init__(self, a, *args):
@@ -38,8 +42,11 @@ class ABCDatabasable:
 
     def dict(self, include_id=True):
         d = self.__dict__
-        if "_id" in d and not include_id:
-            del d["_id"]
+        if "_id" in d:
+            if include_id:
+                d["_id"] = str(d["_id"])
+            else:
+                del d["_id"]
         return d
 
     def json(self):
@@ -55,15 +62,25 @@ class User(ABCDatabasable):
     collection_name = "users"
     id_in_json = False
 
-    def _from_scratch(self, username, passwordhash, anchor, work, vacation):
+    def _from_scratch(self, username, passwordhash, phone, anchor, work_days, vacation_days):
         self.username = username
         self.passwordhash = passwordhash
+        self.phone = phone
         self.anchor = anchor
-        self.work = work
-        self.vacation = vacation
+        self.work_days = work_days
+        self.vacation_days = vacation_days
+        self.set_percents(work_days)
 
-    def json(self):
-        return self.dict(False)
+    def set_percents(self, days):
+        extra = 100%days
+        self.percents = [100//days + (1 if i<extra else 0) for i in range(days)]
+
+    def set_calendar(self, anchor, work_days, vacation_days):
+        self.anchor = anchor
+        self.vacation_days = vacation_days
+        if self.work_days != work_days:
+            self.set_percents(work_days)
+            self.work_days = work_days
 
     @classmethod
     def find(cls, username):
@@ -95,12 +112,3 @@ class Assignment(ABCDatabasable):
     @classmethod
     def find_all(cls, username):
         return list(map(cls, db.assignments.find({"user": username})))
-
-if __name__=="__main__":
-    ID = "63e896e4fadbfb97da27658a"
-    username = "matthew"
-    a = Assignment(db.assignments.find_one({"_id": ObjectId(ID), "user": username}))
-    #print(a.dict(False))
-    #db.assignments.update_one({"_id": ObjectId(ID)}, {"$set": {'user': 'matthew', 'name': 'Cloud Quiz', 'course': 'COMP5530', 'due_date': '2023/03/15', 'difficulty': 50}})
-    a.difficulty = 5
-    a.save()
