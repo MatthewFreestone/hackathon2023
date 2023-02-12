@@ -93,4 +93,25 @@ def get_recommended_schedule():
                                                                            token=args.get("token"))
 
 
+@app.route("/sendmorningmessage", methods=["GET"])
+def send_morning_message():
+    args = request.args
+    valid, user = decode(args.get("token"))
+    if not valid:
+        return {"error": "Invalid token"}
+    cur_user = User.find(user)
+    text(cur_user.phone, get_encourage_message())
+    return "Success"
+
+@app.route("/sendeveningmessage", methods=["GET"])
+def send_evening_message():
+    args = request.args
+    valid, user = decode(args.get("token"))
+    if not valid:
+        return {"error": "Invalid token"}
+    cur_user = User.find(user)
+    text(cur_user.phone, get_congrats_message())
+    return "Success"
+
+
 app.run(host='0.0.0.0', port=int(os.environ["PORT"]))
