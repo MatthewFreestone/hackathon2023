@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, render_template, send_from_directory
 from flask_cors import CORS
 from db import Assignment, User, set_db_test_data
 from sms import text
@@ -9,13 +9,12 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
-app = Flask("")
+app = Flask("", static_folder="out", static_url_path="")
 CORS(app)
 
 @app.route("/")
 def home():
-
-    return "hello world"
+    return send_from_directory(app.static_folder, "index.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -129,4 +128,4 @@ def send_evening_message():
     return "Success"
 
 
-app.run(host='0.0.0.0', port=int(os.environ["PORT"]))
+app.run(host='0.0.0.0', port=int(os.environ["PORT"]), debug=True)
