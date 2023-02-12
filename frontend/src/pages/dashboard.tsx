@@ -41,10 +41,22 @@ const Dashboard = () => {
     const [assignments, setAssignments] = useState<Assignment[]>([])
 
     const [workDays, setWorkDays] = useState<WorkDay[]>([])
-    const [percentages, setPercentages] = useState<number[]>([])
 
-    const totalWorkPercentage = percentages && percentages.reduce((a, b) => a + b, 0)
-    const validWorkPercentage = totalWorkPercentage === 100
+    const [totalWorkPercentage, setTotalWorkPercentage] = useState<Number>(0)
+    const [validWorkPercentage, setValidWorkPercentage] = useState<boolean>(true)
+
+    useEffect(() => {
+        console.log("i got here")
+        if (workDays){
+            const percentages = workDays.map((workDay) => workDay.percentage)
+            setTotalWorkPercentage(percentages.reduce((a, b) => a + b, 0))
+            // console.log()
+            setValidWorkPercentage(percentages.reduce((a, b) => a + b, 0) === 100)
+                // percentages.every((percentage) => percentage >= 0 && percentage <= 100) && 
+            // console.log("validpercentage?", validWorkPercentage)
+        }
+    }, [workDays])
+
 
     useEffect(() => {
         // console.log("startDate: ", startDate)
@@ -118,13 +130,13 @@ const Dashboard = () => {
         const destination = `${BACKEND_URL}/setcalendar?anchor=${anchor}&work_days=${work_days}&vacation_days=${vacation_days}&token=${token}`
         console.log(`Sending request to ${destination}`)
         axios.post(destination).then((res) => {
-            console.log(res.data)
             if (res.data.error) {
                 console.error("Error in updating calendar")
                 return
             }
-            setPercentages(res.data.percents)
-            console.log(percentages)
+            console.log(res.data)
+            createWorkDayCards(res.data.percents)
+            console.log(workDays)
         })
         .catch((err) => {
             console.log(err)
@@ -151,7 +163,7 @@ const Dashboard = () => {
         language: "en",
     }
 
-    const createWorkDayCards = () => {
+    const createWorkDayCards = (percentages: number[]) => {
         let new_workdays: WorkDay[] = []
         // find days between anchorDate and startDate
         for (let i = 0; i < percentages.length; i++) {
@@ -172,7 +184,6 @@ const Dashboard = () => {
         }
         updateAssignments()
         updateCalendar()
-        createWorkDayCards()
         document.location.href = '#availability'
     }
 
@@ -198,19 +209,18 @@ const Dashboard = () => {
                     <div className="flex justify-center flex-wrap gap-10">
                         {assignments.length !== 0 && assignments.map((assignment) => {
                             return (
-                                <div className="flex justify-center">
-                                <AssignmentCard
-                                    assignment={assignment}
-                                    onDifficultyChange={(value) => {
-                                        console.log("Changing difficulty of ", assignment.name, " to ", value)
-                                        assignment.difficulty = value
-                                    }}
-                                    onChangeSplitable={(value) => {
-                                        console.log("Changing splittable of ", assignment.name, " to ", value)
-                                        assignment.splittable = value
-                                    }}
-                                    key={assignment._id}
-                                />
+                                <div className="flex justify-center" key={assignment._id}>
+                                    <AssignmentCard
+                                        assignment={assignment}
+                                        onDifficultyChange={(value) => {
+                                            console.log("Changing difficulty of ", assignment.name, " to ", value)
+                                            assignment.difficulty = value
+                                        }}
+                                        onChangeSplitable={(value) => {
+                                            console.log("Changing splittable of ", assignment.name, " to ", value)
+                                            assignment.splittable = value
+                                        }}
+                                    />
                                 </div>
                             )
                         })}
@@ -294,9 +304,18 @@ const Dashboard = () => {
                                     percentage={workDay.percentage}
                                     key={workDay.date.toString()}
                                     onPercentageChange={(value) => {
-                                        console.log("Changing percentage of ", workDay.date, " to ", value)
-                                        workDay.percentage = value
-                                        setPercentages(() => workDays.map((workDay) => workDay.percentage))
+                                        // console.log("Changing percentage of ", workDay.date, " to ", value)
+                                        setWorkDays((prev) => {
+                                            return prev.map((day) => {
+                                                if (day.date.toString() === workDay.date.toString()) {
+                                                    return {
+                                                        ...day,
+                                                        percentage: value,
+                                                    }
+                                                }
+                                                return day
+                                            })
+                                        })
                                     }}
                                 />
                             )
@@ -312,12 +331,11 @@ const Dashboard = () => {
                         )}
                         {workDays.length !== 0 && (
                             <div className="flex flex-col items-center justify-center w-full mt-4">
-                                <h2 
-                                    
-                                    className= {`text-2xl font-bold tracking-tight text-center ${validWorkPercentage ? "text-white" : 'text-red'} sm:text-3xl my-2`}
-                                    >
-                                    Total Work Percentage: {totalWorkPercentage}%
-                                </h2>
+                                <div className="text-2xl font-bold tracking-tight text-center sm:text-3xl my-2">
+                                    <span>Total Work Percentage: </span>
+                                    <span className={validWorkPercentage ? "text-green-500":"text-red-500"}>
+                                         {`${totalWorkPercentage}%`}</span>
+                                </div>
                             </div>
                         )}
                     </div>
