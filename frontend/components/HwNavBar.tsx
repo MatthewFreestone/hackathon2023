@@ -13,10 +13,13 @@ const navigation = [
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ')
 }
+export type HwNavBarProps = {
+    showSignIn?: boolean
+}
 
-export default function HwNavBar() {
+export default function HwNavBar({ showSignIn } : HwNavBarProps) {
   return (
-    <Disclosure as="nav" className="bg-blue-500 fixed w-full">
+    <Disclosure as="nav" className="bg-darkBlue fixed w-full z-50">
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -34,8 +37,8 @@ export default function HwNavBar() {
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex flex-shrink-0 items-center">
-                  <SunIcon className='h-9 w-auto text-yellow-300 lg:hidden'/>
-                  <SunIcon className='h-9 w-auto text-yellow-300 lg:block hudden'/>
+                  <SunIcon className='h-9 w-auto text-darkSand lg:hidden'/>
+                  <SunIcon className='h-9 w-auto text-darkSand lg:block hidden'/>
                   {/* <img
                     className="hidden h-8 w-auto lg:block"
                     src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
@@ -43,8 +46,8 @@ export default function HwNavBar() {
                   /> */}
                 </div>
                 <div className="hidden sm:ml-6 sm:block">
-                  <div className="flex space-x-4">
-                    {navigation.map((item) => (
+                  <div className="flex space-x-4 h-full">
+                    {!showSignIn && navigation.map((item) => (
                       <a
                         key={item.name}
                         href={item.href}
@@ -57,13 +60,19 @@ export default function HwNavBar() {
                         {item.name}
                       </a>
                     ))}
+                    {showSignIn && (
+                        <div className='my-auto'>
+                            <span className='text-gray-300 text-xl font-sans font-semibold'>Plan2Chill</span>
+                        </div>
+                    )}
                   </div>
                 </div>
               </div>
+              {!showSignIn && (
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <button
                   type="button"
-                  className="rounded-full bg-blue-500 p-1 text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                  className="rounded-full bg-darkBlue p-1 text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                 >
                   <span className="sr-only">View notifications</span>
                   <BellIcon className="h-6 w-6" aria-hidden="true" />
@@ -72,7 +81,7 @@ export default function HwNavBar() {
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
                   <div>
-                    <Menu.Button className="flex rounded-full text-gray-300 bg-blue-500 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                    <Menu.Button className="flex rounded-full text-gray-300 bg-darkBlue text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                       <span className="sr-only">Open user menu</span>
                       <UserCircleIcon className="h-8 w-8" aria-hidden="true" />
                     </Menu.Button>
@@ -120,7 +129,20 @@ export default function HwNavBar() {
                     </Menu.Items>
                   </Transition>
                 </Menu>
-              </div>
+              </div>)}
+              {showSignIn && (
+                <div className='flex'>
+                    <a
+                        href="#"
+                        className="rounded-full bg-darkBlue p-1 text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                    >
+                        <span className='text-lg font-sans font-semibold leading-6'>
+                            Sign in <span aria-hidden="true">&rarr;</span>
+                        </span>
+                    </a>
+                </div>
+
+                )}
             </div>
           </div>
 

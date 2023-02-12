@@ -14,6 +14,9 @@ module.exports = {
         lightSand: "#EAD2AC",
         darkSand: "#EABA6B",
       },
+      fontFamily: {
+        sans: ["Inter", "sans-serif"],
+      },
     },
   },
   plugins: [],

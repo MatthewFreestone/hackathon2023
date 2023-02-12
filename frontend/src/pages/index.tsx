@@ -3,7 +3,6 @@ import Image from 'next/image'
 import { Inter, Roboto } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
 import HwNavBar from 'components/HwNavBar'
-import CenteredHero from 'components/CenteredHero'
 import DatePicker from 'tailwind-datepicker-react'
 import { useState } from 'react'
 
@@ -23,7 +22,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex flex-col items-center w-full min-h-screen">
-        <HwNavBar />
+        <HwNavBar showSignIn={true}/>
         <div className="absolute inset-x-0 top-[-10rem] transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]">
         <svg
           className="relative left-[calc(50%-11rem)] -z-10 h-[21.1875rem] max-w-none -translate-x-1/2 rotate-[30deg] sm:left-[calc(50%-30rem)] sm:h-[42.375rem]"
@@ -44,8 +43,8 @@ export default function Home() {
               y2="474.645"
               gradientUnits="userSpaceOnUse"
             >
-              <stop stopColor="#9089FC" />
-              <stop offset={1} stopColor="#FF80B5" />
+              <stop stopColor="#EAD2AC" />
+              <stop offset={1} stopColor="#EABA6B" />
             </linearGradient>
           </defs>
         </svg>
@@ -54,10 +53,21 @@ export default function Home() {
           <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
             <div className='text-center mb-8'>
               <h1 className="text-4xl font-bold tracking-tight text-white-900 sm:text-6xl">
-                Plan your vacation with ease
+                Plan your vacation stress-free.
               </h1>
+              <h2 className='text-lg mt-4'>
+                Let Plan2Chill schedule your homework so you can focus on relaxing.
+              </h2>
             </div>
-            <DatePicker setShow={(state) => setShowDatePicker(state)} show={showDatePicker}/>
+            <div className='flex justify-center flex-row gap-x-6'>
+              <a href="/dashboard" className="rounded-md bg-darkBlue lg:px-5 lg:py-3 px-3.5 py-1.5 text-base font-semibold leading-7 text-white shadow-sm hover:bg-lightBlue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+                Get Started
+              </a>
+              <a href="https://www.google.com/search?q=why+am+i+always+so+sad" className="rounded-md bg-transparent border-darkBlue border lg:px-5 lg:py-3 px-3.5 py-1.5 text-base font-semibold leading-7 text-white shadow-sm hover:bg-lightBlue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+                I hate hackathon projects
+              </a>
+              
+            </div>
           </div>
         </div>
       </main>
