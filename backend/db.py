@@ -23,6 +23,11 @@ def set_db_test_data():
     Assignment("matthew", "Cloud Quiz", "COMP5530", "2023-03-15").save()
     Assignment("matthew", "Problem Set #2", "MATH6660", "2023-03-18").save()
     Assignment("matthew", "Midterm Paper", "COMP5530", "2023-03-17").save()
+    Assignment("david", "Small Quiz", "COMP", "2023-02-16", 1, False).save()
+    Assignment("david", "Coding", "COMP", "2023-02-17", 5).save()
+    Assignment("david", "Big Paper", "ENGL", "2023-02-18", 10).save()
+    Assignment("david", "Essay Quiz", "ENGL", "2023-02-18", 3, False).save()
+    Assignment("david", "Problem Set", "MATH", "2023-02-15", 10).save()
 
 class ABCDatabasable:
     def __init__(self, a, *args):
@@ -96,13 +101,20 @@ class Assignment(ABCDatabasable):
     collection_name = "assignments"
     id_in_json = True
     
-    def _from_scratch(self, user, name, course, due_date):
+    def _from_scratch(self, user, name, course, due_date, difficulty=1, splittable=True):
         self.user = user
         self.name = name
         self.course = course
         self.due_date = due_date
-        self.difficulty = 1
-        self.splittable = True
+        self.difficulty = difficulty
+        self.splittable = splittable
+
+    def day(self, anchor):
+        _, m1, d1 = map(int, anchor.split("-"))
+        _, m2, d2 = map(int, self.due_date.split("-"))
+        self.max_day = d2 - d1 + (28 if m2>m1 else 0)
+        if self.splittable:
+            self.left = 5
 
     @classmethod
     def find(cls, ID, username):
