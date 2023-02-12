@@ -47,6 +47,7 @@ const DayCard = ({ date, percentage, assignments, onPercentageChange }: DayCardP
                                     <MinusIcon className="h-5 w-5 text-darkBlue" />
                                 </button>
                                 <input
+                                    title="Percentage"
                                     className="font-bold w-10 bg-lightSand text-darkBlue text-center"
                                     value={percentage} 
                                     onChange={handleChangePercentage}

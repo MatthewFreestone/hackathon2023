@@ -60,6 +60,7 @@ const AssignmentCard = ({ assignment, onChangeSplitable, onDifficultyChange }: A
                                     <MinusIcon className="h-5 w-5" />
                                 </button>
                                 <input
+                                    title="Difficulty"
                                     className="font-bold w-10 bg-lightSand text-darkBlue text-center selection:bg-white"
                                     value={difficulty} 
                                     onChange={handleChangeDifficulty}
