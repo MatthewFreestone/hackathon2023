@@ -49,8 +49,8 @@ def set_assignments():
     if not valid:
         return {"error": "Invalid token"}
     ids = args.get("ids").split(",")
-    difficulties = list(map(int, args.get("difficulties").split()))
-    splittables = list(map(lambda x:x=="true", args.get("splittables").split()))
+    difficulties = list(map(int, args.get("difficulties").split(",")))
+    splittables = list(map(lambda x:x=="true", args.get("splittables").split(",")))
     
     for i in range(len(ids)):
         assignment = Assignment.find(ids[i], username)
