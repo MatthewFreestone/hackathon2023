@@ -23,7 +23,7 @@ export default function Home() {
         <Image unoptimized src="/dalleImg.png" alt="hero" width={718} height={718} className="absolute blur-lg w-screen h-screen overflow-hidden opacity-80" />
         <HwNavBar showSignIn={true}/>
         <div className="relative w-full lg:px-8 px-6">
-          <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
+          <div className="mx-auto max-w-2xl pt-24 sm:pt-24 lg:pt-36">
             <div className='text-center mb-8'>
               <h1 className="text-4xl font-bold tracking-tight text-white-900 sm:text-6xl">
                 Plan your vacation stress-free.
@@ -36,14 +36,28 @@ export default function Home() {
               <Link href="/dashboard" className="rounded-md bg-darkBlue lg:px-5 lg:py-3 px-3.5 py-1.5 text-base font-semibold leading-7 text-white shadow-sm hover:bg-lightBlue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
                 Get Started
               </Link>
-              <a href="https://www.google.com/search?q=why+am+i+always+so+sad" className="rounded-md bg-transparent border-darkBlue border lg:px-5 lg:py-3 px-3.5 py-1.5 text-base font-semibold leading-7 text-white shadow-sm hover:bg-lightBlue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
-                I hate hackathon projects
+              <a href="https://github.com/MatthewFreestone/hackathon2023" target={"_blank"} className="rounded-md bg-opacity-40 bg-darkBlue border-darkBlue border-2 lg:px-5 lg:py-3 px-3.5 py-1.5 text-base font-semibold leading-7 text-white shadow-sm hover:bg-lightBlue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+                See the code
               </a>
-              
             </div>
+          </div>
+          <div className={`flex flex-row justify-around my-4 items-end ${roboto.className}`}>
+            <Review content={"Plan2chill.tech is an absolute game-changer for students who struggle with balancing their vacations and homework. I used to dread the thought of falling behind on my studies during my vacations, but now I don't have to worry about it. This website has made planning my vacations and homework a stress-free experience. I highly recommend it to all students"}/>
+            <Review content={"I am so impressed with Plan2chill.tech! This website has made planning my vacations a lot more manageable. I no longer have to worry about falling behind on my studies because it generates a well-structured homework schedule for me. I highly recommend this website to all students."}/>
+            <Review content={"Plan2chill.tech changed my life! I used to struggle with planning my homework around my vacations, but now with this website, it's a breeze. I simply enter my vacation dates and my amount of planned work on each day, and voila! It generates a perfectly balanced homework schedule for me. No more stress about missing assignments while on vacation. Highly recommend!"}/>
           </div>
         </div>
       </main>
     </>
   )
 }
+
+const Review = ({ content }) => {
+    return (
+        <div className="flex flex-col w-1/4 h-min items-center justify-center rounded-lg bg-lightSand text-darkBlue p-5">
+          <p>{content}</p>
+          <span> - ChatGPT </span>
+        </div>
+    )
+}
+
