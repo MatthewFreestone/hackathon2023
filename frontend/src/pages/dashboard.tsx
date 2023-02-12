@@ -66,7 +66,7 @@ const Dashboard = () => {
         )
     }, [])
 
-    useEffect(() => {
+    const updateAssignments = () => {
         const token = localStorage.getItem('token')
         if (!token) {
             document.location.href = '/signin'
@@ -77,7 +77,7 @@ const Dashboard = () => {
         assignments.map((assignment) => {
             ids += assignment._id + ","
             difficulties += assignment.difficulty + ","
-            splittables += assignment.splittable + ","
+            splittables += (assignment.splittable || 'false') + ","
         })
         if (ids){
             // remove trailing comma
@@ -93,8 +93,25 @@ const Dashboard = () => {
                 console.error(err)
             })
         }
+    }
+
+    const updateCalendar = () => {
+        const token = localStorage.getItem('token')
+        const month_year_day = anchorDate.toLocaleString('default', { month: '2-digit', day: '2-digit', year: 'numeric' }).split('/')
+        const anchor =  month_year_day[2] + '-' + month_year_day[0] + '-' + month_year_day[1]
+        const work_days = startDate.getDate() - anchorDate.getDate()
+        const vacation_days = endDate.getDate() - startDate.getDate() + 1
         
-    }, [assignments])
+        const destination = `${BACKEND_URL}/setcalendar?anchor=${anchor}&work_days=${work_days}&vacation_days=${vacation_days}&token=${token}`
+        console.log(`Sending request to ${destination}`)
+        axios.post(destination).then((res) => {
+            console.log(res.data)
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+    }
+
     const datepickerOptions = {
         title: "",
         autoHide: false,
@@ -116,19 +133,11 @@ const Dashboard = () => {
     }
 
     const handleSearch = () => {
-        const month_year_day = anchorDate.toLocaleString('default', { month: '2-digit', day: '2-digit', year: 'numeric' }).split('/')
-        const anchor =  month_year_day[2] + '-' + month_year_day[0] + '-' + month_year_day[1]
-        const work_days = startDate.getDate() - anchorDate.getDate()
-        const vacation_days = endDate.getDate() - startDate.getDate() + 1
-        
-        const destination = `${BACKEND_URL}/setcalendar?anchor=${anchor}&work_days=${work_days}&vacation_days=${vacation_days}`
-        console.log(`Sending request to ${destination}`)
-        axios.post(destination).then((res) => {
-            console.log(res.data)
-        })
-        .catch((err) => {
-            console.log(err)
-        })
+        if (endDateInvalid) {
+            return
+        }
+        updateAssignments()
+        updateCalendar()
     }
 
     return (
@@ -146,9 +155,12 @@ const Dashboard = () => {
                     <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl text-center my-2">
                         Upcoming Assignments
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                    {/* <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-4"> */}
+                    <div className="flex justify-center flex-wrap gap-10">
                         {assignments.length !== 0 && assignments.map((assignment) => {
+                            console.log(assignment)
                             return (
+                                <div className="flex justify-center">
                                 <AssignmentCard
                                     assignment={assignment}
                                     onDifficultyChange={(value) => {
@@ -161,6 +173,7 @@ const Dashboard = () => {
                                     }}
                                     key={assignment._id}
                                 />
+                                </div>
                             )
                         })}
                     </div>
