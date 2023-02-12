@@ -12,7 +12,7 @@ type WorkDay = {
     assignments?: string[],
 }
 
-const results = () => {
+const Results = () => {
     const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
     const [results, setResults] = useState([])
     const router = useRouter()
@@ -87,4 +87,4 @@ const results = () => {
     )
 }
 
-export default results
+export default Results
