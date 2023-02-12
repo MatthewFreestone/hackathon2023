@@ -1,4 +1,5 @@
 from flask import Flask, request
+from flask_cors import CORS
 from db import Assignment, User, set_db_test_data
 from sms import text
 from token_auth import encode, decode
@@ -7,7 +8,7 @@ import os
 
 load_dotenv()
 app = Flask("")
-
+CORS(app)
 
 @app.route("/")
 def home():
