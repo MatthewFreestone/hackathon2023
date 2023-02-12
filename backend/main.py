@@ -23,23 +23,45 @@ def home():
 
     return "hello world"
 
+
+@app.route("/login")
+def login():
+    args = request.args
+    if not User.is_valid(args.get("username"), args.get("password")):
+        return {"error": "Invalid username/password"}
+    return {"token": encode(args.get("username"))}
+
+
 @app.route("/resetdb")
 def reset_db():
     set_db_test_data()
     return "db has been reset"
 
+
 @app.route("/loaddata", methods=["GET"])
 def load_data():
     args = request.args
-    user = User.find(args.get("username"))
-    print(user)
-    return {"user": user.json(), "assignments": [a.json() for a in Assignment.find_all(user.name)]}
+    valid, username = decode(args.get("token"))
+    if not valid:
+        return {"error": "Invalid token"}
+    user = User.find(username)
+    if user is None:
+        return {"error": "Unknown user"}
+    return {"user": user.json(), "assignments": [a.json() for a in Assignment.find_all(user.username)]}
 
 
-@app.route("/setdifficulty", methods=["POST"])
+@app.route("/setdifficulty", methods=["GET", "POST"])
 def set_difficulty():
     args = request.args
-    return "Set difficultly of id: " + str(args.get("id")) + " to difficulty: " + str(args.get("difficulty"))
+    valid, user = decode(args.get("token"))
+    if not valid:
+        return {"error": "Invalid token"}
+    assignment = Assignment.find(args.get("id"), user)
+    if assignment is None:
+        return {"error": "Invalid id"}
+    assignment.difficulty = int(args.get("difficulty"))
+    assignment.save()
+    return assignment.json()
 
 
 @app.route("/setpercentage", methods=["POST"])
@@ -62,18 +84,6 @@ def get_recommended_schedule():
     args = request.args
     return "Getting schedule for {username} with the token {token}".format(username=args.get("username"),
                                                                            token=args.get("token"))
-
-
-@app.route("/login", methods=["GET"])
-def login():
-    args = request.args
-    username = args.get("username")
-    password = args.get("password")
-    # if User.is_valid(username, password):
-    #   return encode(username)
-    # else
-    #   return {"username: "", "status": "invalid_credentials"}
-    return "Loaded Data for " + args.get("username")
 
 
 app.run(host='0.0.0.0', port=int(os.environ["PORT"]))
