@@ -13,15 +13,6 @@ CORS(app)
 
 @app.route("/")
 def home():
-    # For texting
-    # text(2567443336, "this is a test message.")
-
-    # For encoded and decoded tokens
-    # args = request.args
-    # username = args.get("username")
-    # encoded = encode(username)
-    # decoded = decode(encoded)
-    #return str(encoded) + " : " + str(decoded)
     return "hello world"
 
 
@@ -65,13 +56,22 @@ def set_difficulty():
     return assignment.json()
 
 
-@app.route("/setpercentage", methods=["POST"])
+@app.route("/setpercentages", methods=["POST"])
 def set_percentage():
     args = request.args
-    return "Set day: " + str(args.get("day")) + " to percentage: " + str(args.get("percentage"))
+    valid, username = decode(args.get("token"))
+    if not valid:
+        return {"error": "Invalid token"}
+    user = User.find(username)
+    if user is None:
+        return {"error": "Unknown user"}
+
+    user.percents = list(map(int, args.get("percentages").split(",")))
+    user.save()
+    return user.json()
 
 
-@app.route("/setcalendar", methods=["GET", "POST"])
+@app.route("/setcalendar", methods=["POST"])
 def set_calendar():
     args = request.args
     valid, username = decode(args.get("token"))
