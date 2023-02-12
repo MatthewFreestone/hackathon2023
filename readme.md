@@ -24,7 +24,7 @@ This is a project for Auburn Hacks 2023. It is a website that allows users to lo
 5. Run the frontend with `npm run dev`
 
 ## Usage
-The website is deployed at [plan2chill.tech](plan2chill.tech). Go check it out!
+The website is deployed at [http://plan2chill.tech](http://plan2chill.tech). Go check it out!
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
