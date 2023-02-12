@@ -42,19 +42,22 @@ def load_data():
     return {"user": user.json(), "assignments": [a.json() for a in Assignment.find_all(user.username)]}
 
 
-@app.route("/setassignment", methods=["POST"])
-def set_assignment():
+@app.route("/setassignments", methods=["POST"])
+def set_assignments():
     args = request.args
     valid, username = decode(args.get("token"))
     if not valid:
         return {"error": "Invalid token"}
-    assignment = Assignment.find(args.get("id"), username)
-    if assignment is None:
-        return {"error": "Invalid id"}
-    assignment.difficulty = int(args.get("difficulty"))
-    assignment.splitable = args.get("splitable")=="true"
-    assignment.save()
-    return assignment.json()
+    ids = args.get("id").split(",")
+    difficulties = list(map(int, args.get("difficulties").split()))
+    splittables = list(map(lambda x:x=="true", args.get("splittables").split()))
+    
+    for i in range(len(ids)):
+        assignment = Assignment.find(args.get("id"), username)
+        assignment.difficulty = difficulties[i]
+        assignment.splittable = splittables[i]
+        assignment.save()
+    return {"success": True}
 
 
 @app.route("/setpercentages", methods=["POST"])

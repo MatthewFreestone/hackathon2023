@@ -102,7 +102,7 @@ class Assignment(ABCDatabasable):
         self.course = course
         self.due_date = due_date
         self.difficulty = 1
-        self.splitable = True
+        self.splittable = True
 
     @classmethod
     def find(cls, ID, username):

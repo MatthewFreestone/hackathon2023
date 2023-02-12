@@ -2,6 +2,7 @@ from db import Assignment, User
 from collections import defaultdict
 import random
 from itertools import permutations
+from math import inf
 
 def sortAssignments(assignments, datePercents):
     targetPercents = [(x, i) for (i, x) in enumerate(datePercents)]
@@ -35,4 +36,7 @@ def sortAssignments(assignments, datePercents):
 def stupidSortAssignments(assignments, percents):
     total_diff = sum(a.difficulty for difficulty in assignment)
     target_diffs = [total_diff*p/100 for p in percents]
-    
+    best = 
+    for _ in range(1000):
+        assignments.shuffle()
+
