@@ -1,5 +1,5 @@
 from flask import Flask, request
-from db import Assignment, User
+from db import Assignment, User, set_db_test_data
 from sms import text
 from dotenv import load_dotenv
 import os
@@ -12,12 +12,17 @@ def home():
     #text(2567443336, "this is a test message.")
     return "hello world"
 
+@app.route("/resetdb")
+def reset_db():
+    set_db_test_data()
+    return "db has been reset"
+
 @app.route("/loaddata", methods=["GET"])
 def load_data():
     args = request.args
     user = User.find(args.get("username"))
     print(user)
-    return "Loaded Data for " + args.get("username")
+    return {"user": user.json(), "assignments": [a.json() for a in Assignment.find_all(user.name)]}
 
 
 @app.route("/setdifficulty", methods=["POST"])
