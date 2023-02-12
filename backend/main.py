@@ -19,8 +19,9 @@ def home():
     # username = args.get("username")
     # encoded = encode(username)
     # decoded = decode(encoded)
-    return str(encoded) + " : " + str(decoded)
+    #return str(encoded) + " : " + str(decoded)
 
+    return "hello world"
 
 @app.route("/loaddata", methods=["GET"])
 def load_data():
