@@ -50,7 +50,7 @@ def load_data():
     return {"user": user.json(), "assignments": [a.json() for a in Assignment.find_all(user.username)]}
 
 
-@app.route("/setdifficulty", methods=["GET", "POST"])
+@app.route("/setdifficulty", methods=["POST"])
 def set_difficulty():
     args = request.args
     valid, user = decode(args.get("token"))

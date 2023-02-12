@@ -4,7 +4,6 @@ from uuid import uuid4
 from jwt import InvalidTokenError
 
 key = uuid4().hex
-key = "a820e6cf1eac4100a3824ed9bd8fcdcb"
 
 
 def encode(username: str):
