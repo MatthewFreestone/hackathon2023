@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
-app = Flask("", static_folder="out/", static_url_path="", template_folder="out/")
+app = Flask(__name__, static_folder="out/", static_url_path="", template_folder="out/")
 CORS(app)
 
 @app.route("/")
@@ -132,5 +132,5 @@ def send_evening_message():
     text(cur_user.phone, get_congrats_message())
     return "Success"
 
-
-app.run(host='0.0.0.0', port=int(os.environ["PORT"]))
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 8080)))

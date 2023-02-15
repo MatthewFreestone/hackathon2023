@@ -1,3 +1,8 @@
+Dockerfile
+*.pyc
+*.pyd
+*.pyo
+readme.md
 .env
 venv/
 __pycache__/
