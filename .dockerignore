@@ -3,7 +3,6 @@ Dockerfile
 *.pyd
 *.pyo
 readme.md
-.env
 venv/
 __pycache__/
 .idea
@@ -12,5 +11,4 @@ __pycache__/
 .next/
 .node_modules/
 next-end.d.ts
-.env.local
 out/
